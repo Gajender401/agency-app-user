@@ -27,6 +27,17 @@ export default function RootLayout() {
     <GlobalProvider>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/onbording" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/welcome" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/login" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/signup" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/forgotPassword" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/verify" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/accountCreatedDone" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/premiumDone" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/resetPasswordDone" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/resetPassword" options={{ headerShown: false }} />
+
         <Stack.Screen name="+not-found" />
       </Stack>
       <Toast />
