@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { Colors } from "@/constants/Colors";
-import { AntDesign, Entypo } from '@expo/vector-icons'; // Importing Entypo icon from Expo Icons
+import { AntDesign } from '@expo/vector-icons';
 
 const ResetPasswordScreen = () => {
     const [newPassword, setNewPassword] = useState('');
@@ -26,12 +26,12 @@ const ResetPasswordScreen = () => {
             <StatusBar barStyle="dark-content" />
             <Image style={styles.wave_image} source={require('@/assets/images/wave.png')} />
 
-            <View style={{ marginTop: 150 }} >
+            <View style={styles.marginTop150}>
                 <Text style={styles.headingText}>Reset</Text>
                 <Text style={styles.headingText}>Password?</Text>
             </View>
 
-            <View style={styles.innerContainer} >
+            <View style={styles.innerContainer}>
                 <View style={styles.inputContainer}>
                     <TextInput
                         placeholder="New Password"
@@ -52,7 +52,7 @@ const ResetPasswordScreen = () => {
                 </View>
 
                 <View style={styles.sendOTPButton}>
-                    <Text style={{ color: Colors.primary, fontSize: 24, fontWeight: 700 }} >
+                    <Text style={styles.resetText}>
                         Reset
                     </Text>
                     <TouchableOpacity onPress={handleResetPassword} style={styles.arrowButton}>
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         width: "100%",
         flex: 1,
-        marginTop:50
+        marginTop: 50,
     },
     headingText: {
         color: "#10354B",
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginTop: 20,
         justifyContent: "space-around",
-        width: "100%"
+        width: "100%",
     },
     arrowButton: {
         alignItems: "center",
@@ -125,6 +125,14 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         borderWidth: 1,
         borderColor: "#2AA4D5",
+    },
+    marginTop150: {
+        marginTop: 150,
+    },
+    resetText: {
+        color: Colors.primary,
+        fontSize: 24,
+        fontWeight: '700',
     },
 });
 

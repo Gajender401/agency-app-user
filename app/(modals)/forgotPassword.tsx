@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { Colors } from "@/constants/Colors";
-import { AntDesign, Entypo } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 
 const ForgotPasswordScreen = () => {
     const [phoneNumber, setPhoneNumber] = useState('');
@@ -25,16 +25,16 @@ const ForgotPasswordScreen = () => {
             <StatusBar barStyle="dark-content" />
             <Image style={styles.wave_image} source={require('@/assets/images/wave.png')} />
 
-            <View style={{marginTop:150}} >
+            <View style={styles.marginTop150}>
                 <Text style={styles.headingText}>Forgot</Text>
                 <Text style={styles.headingText}>Password?</Text>
             </View>
 
-            <Text style={{color:Colors.primary, paddingRight:10, marginTop:40}} >
-            Enter your phone Number and we will send an OTP to reset your password.
+            <Text style={styles.descriptionText}>
+                Enter your phone number and we will send an OTP to reset your password.
             </Text>
 
-            <View style={styles.innerContainer} >
+            <View style={styles.innerContainer}>
                 <View style={styles.inputContainer}>
                     <TextInput
                         placeholder="Phone Number"
@@ -47,17 +47,16 @@ const ForgotPasswordScreen = () => {
                 </View>
 
                 <View style={styles.sendOTPButton}>
-                    <Text style={{color:Colors.primary, fontSize:24, fontWeight:700}} >
-                    Send OTP
+                    <Text style={styles.sendOTPText}>
+                        Send OTP
                     </Text>
                     <TouchableOpacity onPress={handleSendOTP} style={styles.arrowButton}>
                         <View style={styles.circle}>
-                        <AntDesign name="arrowright" size={24} color="white" />
+                            <AntDesign name="arrowright" size={24} color="white" />
                         </View>
                     </TouchableOpacity>
                 </View>
             </View>
-
         </SafeAreaView>
     );
 };
@@ -73,7 +72,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         width: "100%",
         flex: 1,
-        marginTop:100
+        marginTop: 100,
     },
     headingText: {
         color: "#10354B",
@@ -103,8 +102,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         marginTop: 20,
-        justifyContent:"space-around",
-        width:"100%"
+        justifyContent: "space-around",
+        width: "100%",
     },
     arrowButton: {
         alignItems: "center",
@@ -119,6 +118,19 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         borderWidth: 1,
         borderColor: "#2AA4D5",
+    },
+    marginTop150: {
+        marginTop: 150,
+    },
+    descriptionText: {
+        color: Colors.primary,
+        paddingRight: 10,
+        marginTop: 40,
+    },
+    sendOTPText: {
+        color: Colors.primary,
+        fontSize: 24,
+        fontWeight: '700',
     },
 });
 

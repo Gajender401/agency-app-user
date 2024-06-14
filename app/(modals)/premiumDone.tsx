@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
     View,
     Text,
@@ -12,7 +12,6 @@ import { router } from "expo-router";
 import { Colors } from "@/constants/Colors";
 
 const PermiumDoneScreen = () => {
-
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="dark-content" />
@@ -21,10 +20,10 @@ const PermiumDoneScreen = () => {
                 <Image source={require('@/assets/images/unlocked.png')} />
                 <View style={styles.button_container}>
                     <View>
-                        <Text style={{color:Colors.primary, fontSize: 20, fontWeight: 600, textAlign: "center" }} >
-                            Comgratulations
+                        <Text style={styles.congratulationsText}>
+                            Congratulations
                         </Text>
-                        <Text style={{color:Colors.primary, fontSize: 18, fontWeight: 500, textAlign: "center", width:300 }} >
+                        <Text style={styles.premiumText}>
                             You are now a Premium Member
                         </Text>
                     </View>
@@ -55,12 +54,11 @@ const styles = StyleSheet.create({
         width: "100%",
         gap: 20,
     },
-
     button_container: {
         width: 240,
         gap: 80,
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
     },
     button: {
         borderRadius: 30,
@@ -68,7 +66,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         alignItems: "center",
         width: "100%",
-        borderColor: Colors.primary
+        borderColor: Colors.primary,
     },
     buttonText: {
         fontSize: 21,
@@ -77,7 +75,20 @@ const styles = StyleSheet.create({
         width: "110%",
         position: "absolute",
         height: 300,
-        top: 0
+        top: 0,
+    },
+    congratulationsText: {
+        color: Colors.primary,
+        fontSize: 20,
+        fontWeight: "600",
+        textAlign: "center",
+    },
+    premiumText: {
+        color: Colors.primary,
+        fontSize: 18,
+        fontWeight: "500",
+        textAlign: "center",
+        width: 300,
     },
 });
 

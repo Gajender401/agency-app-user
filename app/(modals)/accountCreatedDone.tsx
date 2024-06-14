@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -12,7 +12,6 @@ import { router } from "expo-router";
 import { Colors } from "@/constants/Colors";
 
 const AccountCreatedDoneScreen = () => {
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
@@ -20,12 +19,12 @@ const AccountCreatedDoneScreen = () => {
       <View style={styles.innerContainer}>
         <Image source={require('@/assets/images/check_mark.png')} />
         <View style={styles.button_container}>
-            <Text style={{fontSize:20, fontWeight:600, textAlign:"center"}} >
-            Account Created Successfuly
-            </Text>
-          <TouchableOpacity onPress={()=> router.push("/(modals)/login")} style={styles.button}>
+          <Text style={styles.successText}>
+            Account Created Successfully
+          </Text>
+          <TouchableOpacity onPress={() => router.push("/(modals)/login")} style={styles.button}>
             <Text style={styles.buttonText}>
-            Continue
+              Continue
             </Text>
           </TouchableOpacity>
         </View>
@@ -48,14 +47,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 10,
     width: "100%",
-    gap:20,
+    gap: 20,
   },
-
   button_container: {
     width: 240,
     gap: 80,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   button: {
     borderRadius: 30,
@@ -63,7 +61,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     alignItems: "center",
     width: "100%",
-    borderColor:Colors.primary
+    borderColor: Colors.primary,
   },
   buttonText: {
     fontSize: 21,
@@ -72,8 +70,13 @@ const styles = StyleSheet.create({
     width: "110%",
     position: "absolute",
     height: 300,
-    top:0
-},
+    top: 0,
+  },
+  successText: {
+    fontSize: 20,
+    fontWeight: "600",
+    textAlign: "center",
+  },
 });
 
 export default AccountCreatedDoneScreen;
