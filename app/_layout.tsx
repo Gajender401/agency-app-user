@@ -37,6 +37,22 @@ export default function RootLayout() {
         <Stack.Screen name="(modals)/premiumDone" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/resetPasswordDone" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/resetPassword" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/editProfile" options={{ headerShown: false }} />
+
+        <Stack.Screen name="(modals)/(home)/route" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/(home)/package" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/(home)/staff" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/(home)/staff_details" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/(home)/drivers_list" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/(home)/cleaners_list" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/(home)/vehicle_documents" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/(home)/vehicle_maintenance" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/(home)/driver_available" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/(home)/technician_support" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/(home)/vehicle_management" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/(home)/vehicle_transaction" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/(home)/vehicle_inspection" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/(home)/vehicle_servicing_history" options={{ headerShown: false }} />
 
         <Stack.Screen name="+not-found" />
       </Stack>
