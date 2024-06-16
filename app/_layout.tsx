@@ -44,7 +44,7 @@ export default function RootLayout() {
         <Stack.Screen name="(modals)/(home)/staff" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/(home)/staff_details" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/(home)/drivers_list" options={{ headerShown: false }} />
-        <Stack.Screen name="(modals)/(home)/cleaners_list" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/(home)/cleaners_list" options={{ headerShadowVisible:false, headerTitle:"Cleaner List", headerTitleAlign:"center" }} />
         <Stack.Screen name="(modals)/(home)/vehicle_documents" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/(home)/vehicle_maintenance" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/(home)/driver_available" options={{ headerShown: false }} />
@@ -53,6 +53,8 @@ export default function RootLayout() {
         <Stack.Screen name="(modals)/(home)/vehicle_transaction" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/(home)/vehicle_inspection" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/(home)/vehicle_servicing_history" options={{ headerShown: false }} />
+
+        <Stack.Screen name="(modals)/(home)/(forms)/add_cleaner" options={{ headerShadowVisible:false, headerTitle:"Add Cleaner", headerTitleAlign:"center" }} />
 
         <Stack.Screen name="+not-found" />
       </Stack>
