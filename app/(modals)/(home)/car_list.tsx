@@ -14,7 +14,7 @@ import {
 import { BlurView } from 'expo-blur';
 import { Colors } from "@/constants/Colors";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
-import { cleaners } from "@/constants/dummy";
+import { cars } from "@/constants/dummy";
 import { router } from "expo-router";
 
 interface BlurOverlayProps {
@@ -35,13 +35,20 @@ const BlurOverlay: React.FC<BlurOverlayProps> = ({ visible, onRequestClose }) =>
     </Modal>
 );
 
-const CleanerListScreen: React.FC = () => {
+const CarListScreen: React.FC = () => {
     const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+    const [selectedCarImage, setSelectedCarImage] = React.useState<Array<string> | null>(null);
+    const [showPhotoModal, setShowPhotoModal] = React.useState(false);
 
     const handleDelete = () => {
         // Implement delete logic here
-        console.log("Deleting cleaner...");
+        console.log("Deleting car...");
         setShowDeleteModal(false);
+    };
+
+    const handleViewPhoto = (imageUrl: Array<string>) => {
+        setSelectedCarImage(imageUrl);
+        setShowPhotoModal(true);
     };
 
     return (
@@ -55,17 +62,13 @@ const CleanerListScreen: React.FC = () => {
                 />
             </View>
 
-            <TouchableOpacity onPress={()=>router.push("add_cleaner")} style={styles.addButton}>
-                <Text style={styles.addButtonText}>Add cleaner</Text>
+            <TouchableOpacity onPress={() => router.push("add_car")} style={styles.addButton}>
+                <Text style={styles.addButtonText}>Add Car</Text>
             </TouchableOpacity>
 
-            <ScrollView style={styles.cleanersList}>
-                {cleaners.map((cleaner, index) => (
+            <ScrollView style={styles.carsList}>
+                {cars.map((car, index) => (
                     <View key={index} style={styles.card}>
-                        <Image
-                            source={{ uri: cleaner.imageUrl }}
-                            style={styles.cleanerImage}
-                        />
                         <View style={styles.cardHeader}>
                             <TouchableOpacity style={styles.editButton}>
                                 <Text style={styles.editButtonText}>Edit form</Text>
@@ -74,17 +77,16 @@ const CleanerListScreen: React.FC = () => {
                                 <MaterialIcons name="delete" size={24} color={Colors.darkBlue} />
                             </TouchableOpacity>
                         </View>
-                        <Text style={styles.cardText}>Name: {cleaner.name}</Text>
-                        <Text style={styles.cardText}>Mobile: {cleaner.mobile}</Text>
-                        <Text style={styles.cardText}>City: {cleaner.city}</Text>
-                        <Text style={styles.cardText}>State: {cleaner.state}</Text>
-                        <Text style={styles.cardText}>Type: {cleaner.type}</Text>
-                        <View style={styles.aadharContainer}>
-                            <Text style={styles.cardText}>Aadhar card</Text>
-                            <TouchableOpacity style={styles.viewAadharButton}>
-                                <Text style={styles.viewAadharButtonText}>View Aadhar</Text>
-                            </TouchableOpacity>
-                        </View>
+                        <Text style={styles.cardText}>Vehicle Number: {car.vehicleNumber}</Text>
+                        <Text style={styles.cardText}>Seating Capacity: {car.seatingCapacity}</Text>
+                        <Text style={styles.cardText}>Vehicle Model: {car.vehicleModel}</Text>
+                        <Text style={styles.cardText}>Location: {car.location}</Text>
+                        <Text style={styles.cardText}>Car Name: {car.carName}</Text>
+                        <Text style={styles.cardText}>Contact Number: {car.contactNumber}</Text>
+                        <Text style={styles.cardText}>Features: {car.features.join(', ')}</Text>
+                        <TouchableOpacity style={styles.viewPhotoButton} onPress={() => handleViewPhoto(car.imageUrl)}>
+                            <Text style={styles.viewPhotoButtonText}>View Photos</Text>
+                        </TouchableOpacity>
                     </View>
                 ))}
             </ScrollView>
@@ -100,7 +102,7 @@ const CleanerListScreen: React.FC = () => {
 
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
-                        <Text style={styles.modalText}>Are you sure you want to delete this cleaner ?</Text>
+                        <Text style={styles.modalText}>Are you sure you want to delete this car?</Text>
                         <View style={styles.modalButtons}>
                             <TouchableOpacity style={[styles.modalButton, { backgroundColor: "#ccc" }]} onPress={() => setShowDeleteModal(false)}>
                                 <Text style={styles.modalButtonText}>Cancel</Text>
@@ -110,6 +112,27 @@ const CleanerListScreen: React.FC = () => {
                             </TouchableOpacity>
                         </View>
                     </View>
+                </View>
+            </Modal>
+
+            {/* Photo Modal */}
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={showPhotoModal}
+                onRequestClose={() => setShowPhotoModal(false)}
+            >
+                <BlurOverlay visible={showPhotoModal} onRequestClose={() => setShowPhotoModal(false)} />
+
+                <View style={styles.photoModalContainer}>
+                    <TouchableWithoutFeedback onPress={() => setShowPhotoModal(false)}>
+                        <View style={styles.photoModalOverlay} />
+                    </TouchableWithoutFeedback>
+                    <ScrollView style={styles.photoModalContent} contentContainerStyle={styles.photoModalContentContainer}>
+                        {selectedCarImage && selectedCarImage.map((t, index) => (
+                            <Image key={index} source={{ uri: t }} style={styles.fullImage} />
+                        ))}
+                    </ScrollView>
                 </View>
             </Modal>
         </SafeAreaView>
@@ -143,13 +166,13 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         alignItems: "center",
         marginBottom: 20,
-        width:140
+        width: 140,
     },
     addButtonText: {
         color: "#fff",
         fontWeight: "bold",
     },
-    cleanersList: {
+    carsList: {
         flex: 1,
     },
     card: {
@@ -164,7 +187,7 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         position: "relative",
     },
-    cleanerImage: {
+    carImage: {
         width: 70,
         height: 70,
         borderRadius: 35,
@@ -195,18 +218,14 @@ const styles = StyleSheet.create({
         fontWeight: "500",
         fontSize: 15,
     },
-    aadharContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-    },
-    viewAadharButton: {
+    viewPhotoButton: {
         backgroundColor: Colors.darkBlue,
         paddingHorizontal: 10,
         borderRadius: 5,
-        paddingVertical:5
+        paddingVertical: 5,
+        alignItems: "center",
     },
-    viewAadharButtonText: {
+    viewPhotoButtonText: {
         color: "#fff",
         fontWeight: "bold",
     },
@@ -215,7 +234,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        marginHorizontal:5
+        marginHorizontal: 5,
     },
     modalContent: {
         backgroundColor: "#fff",
@@ -249,6 +268,36 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    photoModalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    photoModalOverlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    photoModalContent: {
+        width: '80%',
+        height: '80%',
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 10,
+    },
+    photoModalContentContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    fullImage: {
+        width: '100%',
+        height: 200,
+        borderRadius: 10,
+        marginBottom: 10,
+    },
 });
 
-export default CleanerListScreen;
+export default CarListScreen;

@@ -15,8 +15,7 @@ import { FontAwesome } from '@expo/vector-icons';
 const ProfileScreen = () => {
 
     const handleEdit = () => {
-        // Navigate to edit page
-        router.push('/edit');
+        router.push('/edit_profile');
     };
 
     const handleLogout = () => {

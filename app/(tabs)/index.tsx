@@ -55,9 +55,9 @@ export default function HomeScreen() {
           <Image source={require(`@/assets/images/vehicle_documents.png`)} style={styles.icon} />
           <Text style={styles.iconText}>Vehicle Documents</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push('vehicle_maintenance')} style={styles.gridItem}>
+        <TouchableOpacity onPress={() => router.push('all_vehicle_list')} style={styles.gridItem}>
           <Image source={require(`@/assets/images/vehicle_maintenance.png`)} style={styles.icon} />
-          <Text style={styles.iconText}>Vehicle Maintenance</Text>
+          <Text style={styles.iconText}>All Vehicle List</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => router.push('driver_available')} style={styles.gridItem}>
           <Image source={require(`@/assets/images/driver_available.png`)} style={styles.icon} />
@@ -66,6 +66,10 @@ export default function HomeScreen() {
 
         {showMore && (
           <>
+            <TouchableOpacity onPress={() => router.push('vehicle_maintenance')} style={styles.gridItem}>
+              <Image source={require(`@/assets/images/vehicle_maintenance.png`)} style={styles.icon} />
+              <Text style={styles.iconText}>Vehicle Maintenance</Text>
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => router.push('technician_support')} style={styles.gridItem}>
               <Image source={require(`@/assets/images/technician_support.png`)} style={styles.icon} />
               <Text style={styles.iconText}>Technician Support</Text>
@@ -111,7 +115,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   gridItem: {
-    width: '33.33%', 
+    width: '33.33%',
     alignItems: 'center',
     marginVertical: 10,
   },
