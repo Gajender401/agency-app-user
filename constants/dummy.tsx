@@ -403,4 +403,44 @@ const packageData = [
       },
 ]
 
-export {cleaners, drivers, cars, trucks, buses, tempo, packageData}
+const employees = [
+    {
+        id: 1,
+        name: "John Doe",
+        role: "Software Engineer",
+        department: "Engineering",
+        email: "john.doe@example.com",
+        phone: "+1234567890",
+        imageUrl: "https://randomuser.me/api/portraits/men/1.jpg",
+    },
+    {
+        id: 2,
+        name: "Jane Smith",
+        role: "UX/UI Designer",
+        department: "Design",
+        email: "jane.smith@example.com",
+        phone: "+1987654321",
+        imageUrl: "https://randomuser.me/api/portraits/women/2.jpg",
+    },
+    {
+        id: 3,
+        name: "Michael Johnson",
+        role: "Marketing Manager",
+        department: "Marketing",
+        email: "michael.johnson@example.com",
+        phone: "+1122334455",
+        imageUrl: "https://randomuser.me/api/portraits/men/3.jpg",
+    },
+    {
+        id: 4,
+        name: "Emily Davis",
+        role: "HR Specialist",
+        department: "Human Resources",
+        email: "emily.davis@example.com",
+        phone: "+1567890123",
+        imageUrl: "https://randomuser.me/api/portraits/women/4.jpg",
+    },
+];
+
+
+export {cleaners, drivers, cars, trucks, buses, tempo, packageData, employees}

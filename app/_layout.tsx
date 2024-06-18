@@ -45,6 +45,7 @@ export default function RootLayout() {
         <Stack.Screen name="(modals)/(home)/staff_details" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/(home)/drivers_list" options={{  headerShadowVisible:false, headerTitle:"Driver List", headerTitleAlign:"center" }} />
         <Stack.Screen name="(modals)/(home)/cleaners_list" options={{ headerShadowVisible:false, headerTitle:"Cleaner List", headerTitleAlign:"center" }} />
+        <Stack.Screen name="(modals)/(home)/employee_list" options={{ headerShadowVisible:false, headerTitle:"Employee List", headerTitleAlign:"center" }} />
         <Stack.Screen name="(modals)/(home)/vehicle_documents" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/(home)/vehicle_maintenance" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/(home)/driver_available" options={{ headerShown: false }} />
@@ -64,6 +65,7 @@ export default function RootLayout() {
 
         <Stack.Screen name="(modals)/(home)/(forms)/add_cleaner" options={{ headerShadowVisible:false, headerTitle:"Add Cleaner", headerTitleAlign:"center" }} />
         <Stack.Screen name="(modals)/(home)/(forms)/add_driver" options={{ headerShadowVisible:false, headerTitle:"Add Driver", headerTitleAlign:"center" }} />
+        <Stack.Screen name="(modals)/(home)/(forms)/add_employee" options={{ headerShadowVisible:false, headerTitle:"Add Employee", headerTitleAlign:"center" }} />
         <Stack.Screen name="(modals)/(home)/(forms)/add_car" options={{ headerShadowVisible:false, headerTitle:"Add Car", headerTitleAlign:"center" }} />
         <Stack.Screen name="(modals)/(home)/(forms)/add_bus" options={{ headerShadowVisible:false, headerTitle:"Add Bus", headerTitleAlign:"center" }} />
         <Stack.Screen name="(modals)/(home)/(forms)/add_tempo" options={{ headerShadowVisible:false, headerTitle:"Add Tempo", headerTitleAlign:"center" }} />
