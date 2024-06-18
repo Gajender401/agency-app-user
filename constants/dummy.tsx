@@ -191,5 +191,216 @@ const cars = [
     },
 ];
 
+const trucks = [
+    {
+        vehicleNumber: "AB123CD",
+        numberOfTyres: 6,
+        vehicleWeight: "10 tons",
+        model: "Model X",
+        bodyType: "Flatbed",
+        location: "New York",
+        chassisNumber: "CH123456789",
+        forRentOrSell: "For Rent",
+        imageUrl: [
+            "https://via.placeholder.com/150/92c952",
+            "https://via.placeholder.com/150/771796"
+        ]
+    },
+    {
+        vehicleNumber: "EF456GH",
+        numberOfTyres: 8,
+        vehicleWeight: "15 tons",
+        model: "Model Y",
+        bodyType: "Tanker",
+        location: "Los Angeles",
+        chassisNumber: "CH987654321",
+        forRentOrSell: "For Sell",
+        imageUrl: [
+            "https://via.placeholder.com/150/24f355",
+            "https://via.placeholder.com/150/d32776"
+        ]
+    },
+    {
+        vehicleNumber: "IJ789KL",
+        numberOfTyres: 10,
+        vehicleWeight: "20 tons",
+        model: "Model Z",
+        bodyType: "Refrigerated",
+        location: "Chicago",
+        chassisNumber: "CH123123123",
+        forRentOrSell: "For Rent",
+        imageUrl: [
+            "https://via.placeholder.com/150/f66b97",
+            "https://via.placeholder.com/150/56a8c2"
+        ]
+    },
+    {
+        vehicleNumber: "MN012OP",
+        numberOfTyres: 12,
+        vehicleWeight: "25 tons",
+        model: "Model A",
+        bodyType: "Dump",
+        location: "Houston",
+        chassisNumber: "CH321321321",
+        forRentOrSell: "For Sell",
+        imageUrl: [
+            "https://via.placeholder.com/150/b0f7cc",
+            "https://via.placeholder.com/150/54176f"
+        ]
+    }
+];
 
-export {cleaners, drivers, cars}
+const buses = [
+    {
+        vehicleNumber: "BC234DE",
+        seatingCapacity: 50,
+        vehicleModel: "Model B",
+        bodyType: "Coach",
+        location: "San Francisco",
+        chassisNumber: "CH456456456",
+        forRentOrSell: "For Rent",
+        imageUrl: [
+            "https://via.placeholder.com/150/66b7d2",
+            "https://via.placeholder.com/150/123456"
+        ]
+    },
+    {
+        vehicleNumber: "GH567IJ",
+        seatingCapacity: 60,
+        vehicleModel: "Model C",
+        bodyType: "Double Decker",
+        location: "Miami",
+        chassisNumber: "CH654654654",
+        forRentOrSell: "For Sell",
+        imageUrl: [
+            "https://via.placeholder.com/150/456789",
+            "https://via.placeholder.com/150/abcdef"
+        ]
+    },
+    {
+        vehicleNumber: "KL890MN",
+        seatingCapacity: 40,
+        vehicleModel: "Model D",
+        bodyType: "Minibus",
+        location: "Seattle",
+        chassisNumber: "CH789789789",
+        forRentOrSell: "For Rent",
+        imageUrl: [
+            "https://via.placeholder.com/150/fedcba",
+            "https://via.placeholder.com/150/654321"
+        ]
+    },
+    {
+        vehicleNumber: "OP123QR",
+        seatingCapacity: 45,
+        vehicleModel: "Model E",
+        bodyType: "Shuttle",
+        location: "Denver",
+        chassisNumber: "CH987987987",
+        forRentOrSell: "For Sell",
+        imageUrl: [
+            "https://via.placeholder.com/150/89abcd",
+            "https://via.placeholder.com/150/ef1234"
+        ]
+    }
+];
+
+const tempo = [
+    {
+        vehicleNumber: "BC234DE",
+        seatingCapacity: 50,
+        vehicleModel: "Model B",
+        bodyType: "Coach",
+        location: "San Francisco",
+        chassisNumber: "CH456456456",
+        forRentOrSell: "For Rent",
+        imageUrl: [
+            "https://via.placeholder.com/150/66b7d2",
+            "https://via.placeholder.com/150/123456"
+        ]
+    },
+    {
+        vehicleNumber: "GH567IJ",
+        seatingCapacity: 60,
+        vehicleModel: "Model C",
+        bodyType: "Double Decker",
+        location: "Miami",
+        chassisNumber: "CH654654654",
+        forRentOrSell: "For Sell",
+        imageUrl: [
+            "https://via.placeholder.com/150/456789",
+            "https://via.placeholder.com/150/abcdef"
+        ]
+    },
+    {
+        vehicleNumber: "KL890MN",
+        seatingCapacity: 40,
+        vehicleModel: "Model D",
+        bodyType: "Minibus",
+        location: "Seattle",
+        chassisNumber: "CH789789789",
+        forRentOrSell: "For Rent",
+        imageUrl: [
+            "https://via.placeholder.com/150/fedcba",
+            "https://via.placeholder.com/150/654321"
+        ]
+    },
+    {
+        vehicleNumber: "OP123QR",
+        seatingCapacity: 45,
+        vehicleModel: "Model E",
+        bodyType: "Shuttle",
+        location: "Denver",
+        chassisNumber: "CH987987987",
+        forRentOrSell: "For Sell",
+        imageUrl: [
+            "https://via.placeholder.com/150/89abcd",
+            "https://via.placeholder.com/150/ef1234"
+        ]
+    }
+];
+
+const packageData = [
+    {
+        vehicleNumber: 'ABC123',
+        otherVehicleNumber: 'XYZ456',
+        customerName: 'John Doe',
+        mobileNumber: '1234567890',
+        alternateNumber: '9876543210',
+        kmStarting: '1000',
+        perKmRate: '10',
+        advancedAmount: '5000',
+        remainingAmount: '2000',
+        departurePlace: 'City A',
+        destinationPlace: 'City B',
+        departureTime: '10:00 AM',
+        returnTime: '5:00 PM',
+        toll: '200',
+        otherStateTax: '100',
+        instructions: 'Handle with care',
+        addNote: 'Please note additional instructions',
+        entryParking: 'Paid parking available'
+      },
+      {
+        vehicleNumber: 'DEF456',
+        otherVehicleNumber: 'PQR789',
+        customerName: 'Jane Smith',
+        mobileNumber: '9876543210',
+        alternateNumber: '1234567890',
+        kmStarting: '1500',
+        perKmRate: '12',
+        advancedAmount: '6000',
+        remainingAmount: '2500',
+        departurePlace: 'City C',
+        destinationPlace: 'City D',
+        departureTime: '9:00 AM',
+        returnTime: '4:00 PM',
+        toll: '150',
+        otherStateTax: '80',
+        instructions: 'Fragile items inside',
+        addNote: 'Contact on arrival',
+        entryParking: 'Free parking'
+      },
+]
+
+export {cleaners, drivers, cars, trucks, buses, tempo, packageData}

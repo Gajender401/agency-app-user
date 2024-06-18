@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import {
     View,
-    Modal,
     StyleSheet,
-    TouchableOpacity,
     Text,
     Image,
     TextInput,
@@ -11,10 +9,13 @@ import {
     ScrollView,
     Platform,
     Alert,
-    ActivityIndicator
+    ActivityIndicator,
+    TouchableOpacity
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Colors } from "@/constants/Colors";
+//@ts-ignore
+import RadioButtonGroup, { RadioButtonItem } from "expo-radio-button";
 
 const AddCarScreen: React.FC = () => {
     const [vehicleNo, setVehicleNo] = useState("");
@@ -23,12 +24,7 @@ const AddCarScreen: React.FC = () => {
     const [location, setLocation] = useState("");
     const [carName, setCarName] = useState("");
     const [contactNo, setContactNo] = useState("");
-    const [features, setFeatures] = useState({
-        AC: false,
-        NonAC: false,
-        ForRent: false,
-        ForSell: false,
-    });
+    const [selectedFeature, setSelectedFeature] = useState<string | null>(null);
     const [carImages, setCarImages] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
 
@@ -45,7 +41,7 @@ const AddCarScreen: React.FC = () => {
             location,
             carName,
             contactNo,
-            features,
+            features: selectedFeature,
             carImages,
         };
 
@@ -72,13 +68,6 @@ const AddCarScreen: React.FC = () => {
         }
     };
 
-    const toggleFeature = (feature: keyof typeof features) => {
-        setFeatures(prevFeatures => ({
-            ...prevFeatures,
-            [feature]: !prevFeatures[feature],
-        }));
-    };
-
     const resetForm = () => {
         setVehicleNo("");
         setSeatingCapacity("");
@@ -86,12 +75,7 @@ const AddCarScreen: React.FC = () => {
         setLocation("");
         setCarName("");
         setContactNo("");
-        setFeatures({
-            AC: false,
-            NonAC: false,
-            ForRent: false,
-            ForSell: false,
-        });
+        setSelectedFeature(null);
         setCarImages([]);
     };
 
@@ -106,6 +90,7 @@ const AddCarScreen: React.FC = () => {
                             value={vehicleNo}
                             onChangeText={(text) => setVehicleNo(text)}
                         />
+                        <Text style={styles.vehiceNumberLabel} >“If your vehicle is to be sold to other vehicle owners or is to be given on rent, then you will have to fill the option given below.”</Text>
                     </View>
                     <View style={styles.inputGroup}>
                         <Text style={styles.label}>Seating Capacity</Text>
@@ -151,30 +136,17 @@ const AddCarScreen: React.FC = () => {
                     </View>
 
                     <View style={styles.featuresContainer}>
-                        <TouchableOpacity
-                            style={[styles.featureButton, features.AC && styles.featureButtonSelected]}
-                            onPress={() => toggleFeature("AC")}
+                        <RadioButtonGroup
+                            containerStyle={styles.radioButtonGroup}
+                            selected={selectedFeature}
+                            onSelected={(value: string) => setSelectedFeature(value)}
+                            radioBackground={Colors.darkBlue}
                         >
-                            <Text style={styles.featureText}>AC</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={[styles.featureButton, features.NonAC && styles.featureButtonSelected]}
-                            onPress={() => toggleFeature("NonAC")}
-                        >
-                            <Text style={styles.featureText}>Non-AC</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={[styles.featureButton, features.ForRent && styles.featureButtonSelected]}
-                            onPress={() => toggleFeature("ForRent")}
-                        >
-                            <Text style={styles.featureText}>For Rent</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={[styles.featureButton, features.ForSell && styles.featureButtonSelected]}
-                            onPress={() => toggleFeature("ForSell")}
-                        >
-                            <Text style={styles.featureText}>For Sell</Text>
-                        </TouchableOpacity>
+                            <RadioButtonItem value="AC" label={<Text style={{color:Colors.primary, fontWeight:"500"}} >AC</Text>} style={styles.radioButtonItem} />
+                            <RadioButtonItem value="NonAC" label={<Text style={{color:Colors.primary, fontWeight:"500"}} >Non-AC</Text>} style={styles.radioButtonItem} />
+                            <RadioButtonItem value="ForRent" label={<Text style={{color:Colors.primary, fontWeight:"500"}} >For Rent</Text>} style={styles.radioButtonItem} />
+                            <RadioButtonItem value="ForSell" label={<Text style={{color:Colors.primary, fontWeight:"500"}} >For Sell</Text>} style={styles.radioButtonItem} />
+                        </RadioButtonGroup>
                     </View>
 
                     <TouchableOpacity style={styles.imagePicker} onPress={handleImagePicker}>
@@ -238,7 +210,7 @@ const styles = StyleSheet.create({
     input: {
         borderColor: Colors.secondary,
         borderWidth: 1,
-        borderRadius: 5,
+        borderRadius: 10,
         paddingHorizontal: 10,
         height: 40,
     },
@@ -246,23 +218,21 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         flexWrap: "wrap",
         justifyContent: "space-between",
+        backgroundColor: Colors.secondary,
+        padding: 10,
+        borderRadius: 10,
         marginBottom: 15,
     },
-    featureButton: {
-        width: "48%",
-        padding: 15,
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: Colors.secondary,
-        alignItems: "center",
-        marginBottom: 10,
+    radioButtonGroup: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: "space-between",
+        gap:10
     },
-    featureButtonSelected: {
-        backgroundColor: Colors.darkBlue,
-    },
-    featureText: {
-        color: Colors.secondary,
-        fontWeight: "bold",
+    radioButtonItem: {
+        borderColor:Colors.secondary,
+        backgroundColor:"white",
+        color:Colors.darkBlue
     },
     imagePicker: {
         backgroundColor: Colors.darkBlue,
@@ -301,6 +271,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "bold",
     },
+    vehiceNumberLabel: {
+        fontSize: 9,
+        fontWeight: "500",
+        paddingHorizontal: 15,
+        marginTop: 5
+    }
 });
 
 export default AddCarScreen;

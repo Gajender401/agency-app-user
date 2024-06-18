@@ -18,15 +18,15 @@ const AllVehicleListScreen: React.FC = () => {
                     <Image source={require('@/assets/images/car.png')} />
                     <Text style={styles.carListText}>Car List</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.carListButton}>
+                <TouchableOpacity onPress={()=>router.push("bus_list")} style={styles.carListButton}>
                     <Image source={require('@/assets/images/bus.png')} />
                     <Text style={styles.carListText}>Bus List</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.carListButton}>
+                <TouchableOpacity onPress={()=>router.push("tempo_list")} style={styles.carListButton}>
                     <Image source={require('@/assets/images/tempo.png')} />
                     <Text style={styles.carListText}>Tempo List</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.carListButton}>
+                <TouchableOpacity onPress={()=>router.push("truck_list")} style={styles.carListButton}>
                     <Image source={require('@/assets/images/truck.png')} />
                     <Text style={styles.carListText}>Truck List</Text>
                 </TouchableOpacity>

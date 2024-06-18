@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     input: {
         borderColor: Colors.secondary,
         borderWidth: 1,
-        borderRadius: 5,
+        borderRadius: 10,
         paddingHorizontal: 10,
         height: 40,
     },

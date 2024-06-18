@@ -5,7 +5,7 @@ import React, {
   useState,
   ReactNode,
 } from "react";
-import * as SecureStore from "expo-secure-store";
+// import * as SecureStore from "expo-secure-store";
 import axios, { AxiosInstance } from "axios";
 
 interface GlobalContextProps {
@@ -38,30 +38,30 @@ interface GlobalProviderProps {
 const GlobalProvider: React.FC<GlobalProviderProps> = ({ children }) => {
   const [isLogged, setIsLogged] = useState<boolean>(false);
   const [token, setToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [userData, setUserData] = useState<UserData>();
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
   const baseURL = process.env.EXPO_PUBLIC_URL as string;
 
-  useEffect(() => {
-    SecureStore.getItemAsync("access_token")
-      .then((res) => {
-        if (res) {
-          setIsLogged(true);
-          setToken(res);
-        } else {
-          setIsLogged(false);
-          setToken(null);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+  // useEffect(() => {
+  //   SecureStore.getItemAsync("access_token")
+  //     .then((res) => {
+  //       if (res) {
+  //         setIsLogged(true);
+  //         setToken(res);
+  //       } else {
+  //         setIsLogged(false);
+  //         setToken(null);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     })
+  //     .finally(() => {
+  //       setLoading(false);
+  //     });
+  // }, []);
 
   const apiCaller = axios.create({
     baseURL,

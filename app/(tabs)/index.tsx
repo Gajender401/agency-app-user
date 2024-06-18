@@ -29,7 +29,7 @@ export default function HomeScreen() {
           <Image source={require(`@/assets/images/route.png`)} style={styles.icon} />
           <Text style={styles.iconText}>Daily Route Vehicles</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push('package')} style={styles.gridItem}>
+        <TouchableOpacity onPress={() => router.push('package_vehicle_booking')} style={styles.gridItem}>
           <Image source={require(`@/assets/images/package.png`)} style={styles.icon} />
           <Text style={styles.iconText}>Package Vehicle Booking</Text>
         </TouchableOpacity>
