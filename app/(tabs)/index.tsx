@@ -25,7 +25,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.grid}>
-        <TouchableOpacity onPress={() => router.push('route')} style={styles.gridItem}>
+        <TouchableOpacity onPress={() => router.push('daily_route_vehicles')} style={styles.gridItem}>
           <Image source={require(`@/assets/images/route.png`)} style={styles.icon} />
           <Text style={styles.iconText}>Daily Route Vehicles</Text>
         </TouchableOpacity>
@@ -38,7 +38,7 @@ export default function HomeScreen() {
           <Text style={styles.iconText}>Staff Management</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => router.push('staff_details')} style={styles.gridItem}>
+        <TouchableOpacity onPress={() => router.push('employee_list')} style={styles.gridItem}>
           <Image source={require(`@/assets/images/staff_details.png`)} style={styles.icon} />
           <Text style={styles.iconText}>Staff Details</Text>
         </TouchableOpacity>

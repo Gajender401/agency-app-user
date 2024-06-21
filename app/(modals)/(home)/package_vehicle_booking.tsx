@@ -60,6 +60,16 @@ const PackageVehicleListScreen: React.FC = () => {
               </TouchableOpacity>
             </View>
 
+            <View style={{width:"100%", flexDirection:"row", justifyContent:"space-between"}} >
+              <Text style={{fontWeight:"semibold", fontSize:14}} >Departure</Text>
+              <Text style={{fontWeight:"semibold", fontSize:14}} >Destination</Text>
+            </View>
+            <View style={{width:"100%", flexDirection:"row", justifyContent:"space-around", marginVertical:5}} >
+              <Text style={{fontWeight:"semibold", fontSize:15}} >{pkg.departurePlace}</Text>
+              <MaterialIcons name="keyboard-double-arrow-right" size={24} color={Colors.darkBlue} />
+              <Text style={{fontWeight:"semibold", fontSize:15}} >{pkg.destinationPlace}</Text>
+            </View>
+
             {/* Updated cardText section */}
             <Text style={styles.cardText}>Customer Name: {pkg.customerName}</Text>
             <Text style={styles.cardText}>Journey Duration: {pkg.departureTime} to {pkg.returnTime}</Text>
@@ -194,10 +204,10 @@ const styles = StyleSheet.create({
     fontSize:6
   },
   cardText: {
-    marginBottom: 10,
+    marginBottom: 6,
     color: Colors.secondary,
     fontWeight: "500",
-    fontSize: 15,
+    fontSize: 12,
   },
   viewMoreButton: {
     backgroundColor: Colors.darkBlue,

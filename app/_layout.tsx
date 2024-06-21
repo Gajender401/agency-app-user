@@ -49,7 +49,6 @@ export default function RootLayout() {
         <Stack.Screen name="(modals)/(home)/vehicle_documents" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/(home)/vehicle_maintenance" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/(home)/driver_available" options={{ headerShown: false }} />
-        <Stack.Screen name="(modals)/(home)/technician_support" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/(home)/vehicle_management" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/(home)/vehicle_transaction" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/(home)/vehicle_inspection" options={{ headerShown: false }} />
@@ -62,6 +61,9 @@ export default function RootLayout() {
         <Stack.Screen name="(modals)/(home)/truck_list" options={{ headerShadowVisible:false, headerTitle:"Truck List", headerTitleAlign:"center" }} />
         <Stack.Screen name="(modals)/(home)/package_vehicle_booking" options={{ headerShadowVisible:false, headerTitle:"Package Vehicle booking", headerTitleAlign:"center" }} />
         <Stack.Screen name="(modals)/(home)/package_vehicle_booking_more" options={{ headerShadowVisible:false, headerTitle:"Package Vehicle booking", headerTitleAlign:"center" }} />
+        <Stack.Screen name="(modals)/(home)/daily_route_vehicles" options={{ headerShadowVisible:false, headerTitle:"Daily Route Vehicles", headerTitleAlign:"center" }} />
+        <Stack.Screen name="(modals)/(home)/technician_support" options={{ headerShadowVisible:false, headerTitle:"Technician Support", headerTitleAlign:"center" }} />
+
 
         <Stack.Screen name="(modals)/(home)/(forms)/add_cleaner" options={{ headerShadowVisible:false, headerTitle:"Add Cleaner", headerTitleAlign:"center" }} />
         <Stack.Screen name="(modals)/(home)/(forms)/add_driver" options={{ headerShadowVisible:false, headerTitle:"Add Driver", headerTitleAlign:"center" }} />
@@ -71,6 +73,9 @@ export default function RootLayout() {
         <Stack.Screen name="(modals)/(home)/(forms)/add_tempo" options={{ headerShadowVisible:false, headerTitle:"Add Tempo", headerTitleAlign:"center" }} />
         <Stack.Screen name="(modals)/(home)/(forms)/add_truck" options={{ headerShadowVisible:false, headerTitle:"Add Truck", headerTitleAlign:"center" }} />
         <Stack.Screen name="(modals)/(home)/(forms)/add_package_vehicle_booking" options={{ headerShadowVisible:false, headerTitle:"Package Vehicle Booking Form", headerTitleAlign:"center" }} />
+        <Stack.Screen name="(modals)/(home)/(forms)/add_daily_route_vehicles" options={{ headerShadowVisible:false, headerTitle:"Daily Route Vehicles", headerTitleAlign:"center" }} />
+        <Stack.Screen name="(modals)/(home)/(forms)/add_technician" options={{ headerShadowVisible:false, headerTitle:"Add Technician", headerTitleAlign:"center" }} />
+
 
         <Stack.Screen name="+not-found" />
       </Stack>

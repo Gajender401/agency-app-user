@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -11,24 +11,20 @@ import {
 import { router } from "expo-router";
 import { Colors } from "@/constants/Colors";
 
-const WelcomeScreen = () => {
-
+const TripCompletedScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
       <Image style={styles.wave_image} source={require('@/assets/images/wave.png')} />
       <View style={styles.innerContainer}>
-        <Image style={styles.image} source={require('@/assets/images/welcome.png')} />
+        <Image source={require('@/assets/images/check_mark.png')} />
         <View style={styles.button_container}>
-          <Image style={{ marginBottom: 10 }} source={require('@/assets/images/tourist_text.png')} />
-          <TouchableOpacity onPress={()=> router.push("/(modals)/login")} style={styles.button}>
+          <Text style={styles.successText}>
+            Trip Completed Successfully
+          </Text>
+          <TouchableOpacity onPress={() => router.push("/home")} style={styles.button}>
             <Text style={styles.buttonText}>
-              Login
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={()=> router.push("/(modals)/signup")} style={styles.button}>
-            <Text style={styles.buttonText}>
-              Sign Up
+              Continue to Home
             </Text>
           </TouchableOpacity>
         </View>
@@ -47,22 +43,17 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     flex: 1,
-    justifyContent: "flex-end",
+    justifyContent: "center",
     alignItems: "center",
     padding: 10,
     width: "100%",
-    gap:80,
-    paddingBottom:100
-  },
-  image: {
-    width: 200,
-    height: 200,
+    gap: 20,
   },
   button_container: {
     width: 240,
-    gap: 25,
+    gap: 80,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   button: {
     borderRadius: 30,
@@ -70,7 +61,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     alignItems: "center",
     width: "100%",
-    borderColor:Colors.primary
+    borderColor: Colors.primary,
   },
   buttonText: {
     fontSize: 21,
@@ -79,8 +70,13 @@ const styles = StyleSheet.create({
     width: "110%",
     position: "absolute",
     height: 300,
-    top:0
-},
+    top: 0,
+  },
+  successText: {
+    fontSize: 20,
+    fontWeight: "600",
+    textAlign: "center",
+  },
 });
 
-export default WelcomeScreen;
+export default TripCompletedScreen;

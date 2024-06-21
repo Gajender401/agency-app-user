@@ -380,8 +380,8 @@ const packageData = [
         instructions: 'Handle with care',
         addNote: 'Please note additional instructions',
         entryParking: 'Paid parking available'
-      },
-      {
+    },
+    {
         vehicleNumber: 'DEF456',
         otherVehicleNumber: 'PQR789',
         customerName: 'Jane Smith',
@@ -400,7 +400,7 @@ const packageData = [
         instructions: 'Fragile items inside',
         addNote: 'Contact on arrival',
         entryParking: 'Free parking'
-      },
+    },
 ]
 
 const employees = [
@@ -442,5 +442,87 @@ const employees = [
     },
 ];
 
+const dailyRoutes = [
+    {
+        vehicleNumber: "ABC123",
+        departureTime: "08:00 AM",
+        cleanerName: "John Doe",
+        driverName1: "Jane Smith",
+        driverName2: "Michael Johnson",
+        departure: "Station A",
+        destination: "Station B",
+    },
+    {
+        vehicleNumber: "DEF456",
+        departureTime: "09:00 AM",
+        cleanerName: "Alice Brown",
+        driverName1: "Robert Wilson",
+        driverName2: "Emily Davis",
+        departure: "Station C",
+        destination: "Station D",
+    },
+    {
+        vehicleNumber: "GHI789",
+        departureTime: "10:00 AM",
+        cleanerName: "Chris Martin",
+        driverName1: "David Lee",
+        driverName2: "Sophia Taylor",
+        departure: "Station E",
+        destination: "Station F",
+    },
+    {
+        vehicleNumber: "JKL012",
+        departureTime: "11:00 AM",
+        cleanerName: "Nina Walker",
+        driverName1: "Brian Harris",
+        driverName2: "Linda Young",
+        departure: "Station G",
+        destination: "Station H",
+    },
+    {
+        vehicleNumber: "MNO345",
+        departureTime: "12:00 PM",
+        cleanerName: "Oscar Scott",
+        driverName1: "George Hall",
+        driverName2: "Anna King",
+        departure: "Station I",
+        destination: "Station J",
+    },
+];
 
-export {cleaners, drivers, cars, trucks, buses, tempo, packageData, employees}
+const technicians = [
+    {
+        name: "John Doe",
+        altNumber: "9876543210",
+        type: "Electrician",
+        vehicleType: "Van"
+    },
+    {
+        name: "Jane Smith",
+        altNumber: "8765432109",
+        type: "Plumber",
+        vehicleType: "Truck"
+    },
+    {
+        name: "Michael Johnson",
+        altNumber: "7654321098",
+        type: "HVAC Technician",
+        vehicleType: "SUV"
+    },
+    {
+        name: "Emily Davis",
+        altNumber: "6543210987",
+        type: "Carpenter",
+        vehicleType: "Pickup"
+    },
+    {
+        name: "Robert Wilson",
+        altNumber: "5432109876",
+        type: "Technician",
+        vehicleType: "Car"
+    },
+];
+
+
+
+export { cleaners, drivers, cars, trucks, buses, tempo, packageData, employees, dailyRoutes, technicians }
