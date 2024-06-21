@@ -33,19 +33,14 @@ export default function HomeScreen() {
           <Image source={require(`@/assets/images/package.png`)} style={styles.icon} />
           <Text style={styles.iconText}>Package Vehicle Booking</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push('staff')} style={styles.gridItem}>
-          <Image source={require(`@/assets/images/staff.png`)} style={styles.icon} />
-          <Text style={styles.iconText}>Staff Management</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => router.push('sell_vehicle')} style={styles.gridItem}>
-          <Image source={require(`@/assets/images/staff.png`)} style={styles.icon} />
-          <Text style={styles.iconText}>Sell Vehicle</Text>
+        <TouchableOpacity onPress={() => router.push('vehicle_servicing_history')} style={styles.gridItem}>
+          <Image source={require(`@/assets/images/vehicle_servicing_history.png`)} style={styles.icon} />
+          <Text style={styles.iconText}>Vehicle Servicing History</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => router.push('employee_list')} style={styles.gridItem}>
           <Image source={require(`@/assets/images/staff_details.png`)} style={styles.icon} />
-          <Text style={styles.iconText}>Staff Details</Text>
+          <Text style={styles.iconText}>Employee Details</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => router.push('drivers_list')} style={styles.gridItem}>
           <Image source={require(`@/assets/images/drivers_list.png`)} style={styles.icon} />
@@ -61,12 +56,12 @@ export default function HomeScreen() {
           <Text style={styles.iconText}>Vehicle Documents</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => router.push('all_vehicle_list')} style={styles.gridItem}>
-          <Image source={require(`@/assets/images/vehicle_maintenance.png`)} style={styles.icon} />
+          <Image source={require(`@/assets/images/vehicle_management.png`)} style={styles.icon} />
           <Text style={styles.iconText}>All Vehicle List</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push('driver_available')} style={styles.gridItem}>
-          <Image source={require(`@/assets/images/driver_available.png`)} style={styles.icon} />
-          <Text style={styles.iconText}>Driver Available</Text>
+        <TouchableOpacity onPress={() => router.push('technician_support')} style={styles.gridItem}>
+          <Image source={require(`@/assets/images/technician_support.png`)} style={styles.icon} />
+          <Text style={styles.iconText}>Technician Support</Text>
         </TouchableOpacity>
 
         {showMore && (
@@ -75,25 +70,9 @@ export default function HomeScreen() {
               <Image source={require(`@/assets/images/vehicle_maintenance.png`)} style={styles.icon} />
               <Text style={styles.iconText}>Vehicle Maintenance</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => router.push('technician_support')} style={styles.gridItem}>
-              <Image source={require(`@/assets/images/technician_support.png`)} style={styles.icon} />
-              <Text style={styles.iconText}>Technician Support</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => router.push('vehicle_management')} style={styles.gridItem}>
-              <Image source={require(`@/assets/images/vehicle_management.png`)} style={styles.icon} />
-              <Text style={styles.iconText}>Vehicle Management</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => router.push('vehicle_transaction')} style={styles.gridItem}>
-              <Image source={require(`@/assets/images/vehicle_transaction.png`)} style={styles.icon} />
-              <Text style={styles.iconText}>Vehicle Transaction</Text>
-            </TouchableOpacity>
             <TouchableOpacity onPress={() => router.push('vehicle_inspection')} style={styles.gridItem}>
               <Image source={require(`@/assets/images/vehicle_inspection.png`)} style={styles.icon} />
               <Text style={styles.iconText}>Vehicle Inspection</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => router.push('vehicle_servicing_history')} style={styles.gridItem}>
-              <Image source={require(`@/assets/images/vehicle_servicing_history.png`)} style={styles.icon} />
-              <Text style={styles.iconText}>Vehicle Servicing History</Text>
             </TouchableOpacity>
           </>
         )}
