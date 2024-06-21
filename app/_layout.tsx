@@ -46,12 +46,10 @@ export default function RootLayout() {
         <Stack.Screen name="(modals)/(home)/drivers_list" options={{  headerShadowVisible:false, headerTitle:"Driver List", headerTitleAlign:"center" }} />
         <Stack.Screen name="(modals)/(home)/cleaners_list" options={{ headerShadowVisible:false, headerTitle:"Cleaner List", headerTitleAlign:"center" }} />
         <Stack.Screen name="(modals)/(home)/employee_list" options={{ headerShadowVisible:false, headerTitle:"Employee List", headerTitleAlign:"center" }} />
-        <Stack.Screen name="(modals)/(home)/vehicle_documents" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/(home)/vehicle_maintenance" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/(home)/driver_available" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/(home)/vehicle_management" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/(home)/vehicle_transaction" options={{ headerShown: false }} />
-        <Stack.Screen name="(modals)/(home)/vehicle_inspection" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/(home)/vehicle_servicing_history" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/(home)/(forms)/edit_profile" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/(home)/all_vehicle_list" options={{ headerShadowVisible:false, headerTitle:"All Vehicle List", headerTitleAlign:"center" }} />
@@ -63,6 +61,9 @@ export default function RootLayout() {
         <Stack.Screen name="(modals)/(home)/package_vehicle_booking_more" options={{ headerShadowVisible:false, headerTitle:"Package Vehicle booking", headerTitleAlign:"center" }} />
         <Stack.Screen name="(modals)/(home)/daily_route_vehicles" options={{ headerShadowVisible:false, headerTitle:"Daily Route Vehicles", headerTitleAlign:"center" }} />
         <Stack.Screen name="(modals)/(home)/technician_support" options={{ headerShadowVisible:false, headerTitle:"Technician Support", headerTitleAlign:"center" }} />
+        <Stack.Screen name="(modals)/(home)/vehicle_documents" options={{ headerShadowVisible:false, headerTitle:"Vehicle Documents", headerTitleAlign:"center" }} />
+        <Stack.Screen name="(modals)/(home)/vehicle_inspection" options={{ headerShadowVisible:false, headerTitle:"Vehicle Servicing history", headerTitleAlign:"center" }} />
+        <Stack.Screen name="(modals)/(home)/sell_vehicle" options={{ headerShadowVisible:false, headerTitle:" Sell Vehicle", headerTitleAlign:"center" }} />
 
 
         <Stack.Screen name="(modals)/(home)/(forms)/add_cleaner" options={{ headerShadowVisible:false, headerTitle:"Add Cleaner", headerTitleAlign:"center" }} />
@@ -75,6 +76,9 @@ export default function RootLayout() {
         <Stack.Screen name="(modals)/(home)/(forms)/add_package_vehicle_booking" options={{ headerShadowVisible:false, headerTitle:"Package Vehicle Booking Form", headerTitleAlign:"center" }} />
         <Stack.Screen name="(modals)/(home)/(forms)/add_daily_route_vehicles" options={{ headerShadowVisible:false, headerTitle:"Daily Route Vehicles", headerTitleAlign:"center" }} />
         <Stack.Screen name="(modals)/(home)/(forms)/add_technician" options={{ headerShadowVisible:false, headerTitle:"Add Technician", headerTitleAlign:"center" }} />
+        <Stack.Screen name="(modals)/(home)/(forms)/add_vehicle_documents" options={{ headerShadowVisible:false, headerTitle:"Vehicle Documents", headerTitleAlign:"center" }} />
+        <Stack.Screen name="(modals)/(home)/(forms)/add_vehicle_inspection" options={{ headerShadowVisible:false, headerTitle:"Vehicle Documents", headerTitleAlign:"center" }} />
+        <Stack.Screen name="(modals)/(home)/(forms)/add_sell_vehicle" options={{ headerShadowVisible:false, headerTitle:"Sell Vehicle", headerTitleAlign:"center" }} />
 
 
         <Stack.Screen name="+not-found" />

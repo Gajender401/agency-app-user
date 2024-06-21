@@ -38,6 +38,11 @@ export default function HomeScreen() {
           <Text style={styles.iconText}>Staff Management</Text>
         </TouchableOpacity>
 
+        <TouchableOpacity onPress={() => router.push('sell_vehicle')} style={styles.gridItem}>
+          <Image source={require(`@/assets/images/staff.png`)} style={styles.icon} />
+          <Text style={styles.iconText}>Sell Vehicle</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity onPress={() => router.push('employee_list')} style={styles.gridItem}>
           <Image source={require(`@/assets/images/staff_details.png`)} style={styles.icon} />
           <Text style={styles.iconText}>Staff Details</Text>

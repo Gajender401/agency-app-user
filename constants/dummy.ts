@@ -523,6 +523,129 @@ const technicians = [
     },
 ];
 
+const vehicleDocuments = [
+    {
+        number: "KA01AB1234",
+        imageUrl: "https://randomuser.me/api/portraits/men/1.jpg",
+        rcUrl: "https://randomuser.me/api/portraits/men/1.jpg",
+        insuranceUrl: "https://randomuser.me/api/portraits/men/1.jpg",
+        permitUrl: "https://randomuser.me/api/portraits/men/1.jpg",
+        fitnessUrl: "https://randomuser.me/api/portraits/men/1.jpg",
+        taxUrl: "https://randomuser.me/api/portraits/men/1.jpg",
+        pucUrl: "https://randomuser.me/api/portraits/men/1.jpg"
+    },
+    {
+        number: "DL05CD5678",
+        imageUrl: "https://randomuser.me/api/portraits/women/2.jpg",
+        rcUrl: "https://randomuser.me/api/portraits/women/2.jpg",
+        insuranceUrl: "https://randomuser.me/api/portraits/women/2.jpg",
+        permitUrl: "https://randomuser.me/api/portraits/women/2.jpg",
+        fitnessUrl: "https://randomuser.me/api/portraits/women/2.jpg",
+        taxUrl: "https://randomuser.me/api/portraits/women/2.jpg",
+        pucUrl: "https://randomuser.me/api/portraits/women/2.jpg"
+    },
+    {
+        number: "MH12EF9012",
+        imageUrl: "https://randomuser.me/api/portraits/men/3.jpg",
+        rcUrl: "https://randomuser.me/api/portraits/men/3.jpg",
+        insuranceUrl: "https://randomuser.me/api/portraits/men/3.jpg",
+        permitUrl: "https://randomuser.me/api/portraits/men/3.jpg",
+        fitnessUrl: "https://randomuser.me/api/portraits/men/3.jpg",
+        taxUrl: "https://randomuser.me/api/portraits/men/3.jpg",
+        pucUrl: "https://randomuser.me/api/portraits/men/3.jpg"
+    },
+    {
+        number: "TN22GH3456",
+        imageUrl: "https://randomuser.me/api/portraits/women/4.jpg",
+        rcUrl: "https://randomuser.me/api/portraits/women/4.jpg",
+        insuranceUrl: "https://randomuser.me/api/portraits/women/4.jpg",
+        permitUrl: "https://randomuser.me/api/portraits/women/4.jpg",
+        fitnessUrl: "https://randomuser.me/api/portraits/women/4.jpg",
+        taxUrl: "https://randomuser.me/api/portraits/women/4.jpg",
+        pucUrl: "https://randomuser.me/api/portraits/women/4.jpg"
+    },
+    {
+        number: "GJ01IJ7890",
+        imageUrl: "https://randomuser.me/api/portraits/men/5.jpg",
+        rcUrl: "https://randomuser.me/api/portraits/men/5.jpg",
+        insuranceUrl: "https://randomuser.me/api/portraits/men/5.jpg",
+        permitUrl: "https://randomuser.me/api/portraits/men/5.jpg",
+        fitnessUrl: "https://randomuser.me/api/portraits/men/5.jpg",
+        taxUrl: "https://randomuser.me/api/portraits/men/5.jpg",
+        pucUrl: "https://randomuser.me/api/portraits/men/5.jpg"
+    }
+];
 
 
-export { cleaners, drivers, cars, trucks, buses, tempo, packageData, employees, dailyRoutes, technicians }
+
+const serviceRecords = [
+    {
+        vehicleNumber: "AB123CD",
+        garageNumber: "G01",
+        garageName: "Super Garage",
+        date: "2023-05-21",
+        workDetails: "Oil change, Tire rotation",
+        billUrl: "https://randomuser.me/api/portraits/men/1.jpg",
+    },
+    {
+        vehicleNumber: "EF456GH",
+        garageNumber: "G02",
+        garageName: "Mega Garage",
+        date: "2023-06-10",
+        workDetails: "Brake replacement, Battery check",
+        billUrl: "https://randomuser.me/api/portraits/women/2.jpg",
+    },
+    {
+        vehicleNumber: "IJ789KL",
+        garageNumber: "G03",
+        garageName: "Ultra Garage",
+        date: "2023-07-05",
+        workDetails: "Engine tuning, Wheel alignment",
+        billUrl: "https://randomuser.me/api/portraits/men/3.jpg",
+    },
+    {
+        vehicleNumber: "MN012OP",
+        garageNumber: "G04",
+        garageName: "Hyper Garage",
+        date: "2023-08-15",
+        workDetails: "Transmission repair, Exhaust replacement",
+        billUrl: "https://randomuser.me/api/portraits/women/4.jpg",
+    },
+    {
+        vehicleNumber: "QR345ST",
+        garageNumber: "G05",
+        garageName: "Prime Garage",
+        date: "2023-09-25",
+        workDetails: "Air conditioning repair, Fuel system cleaning",
+        billUrl: "https://randomuser.me/api/portraits/men/5.jpg",
+    },
+];
+
+const sell_cars = [
+    {
+        vehicleNumber: "ABC1234",
+        vehicleModel: "Toyota Camry",
+        contactNumber: "123-456-7890",
+        location: "New York, NY",
+        imageUrl: [
+            "https://imgd.aeplcdn.com/664x374/n/cw/ec/178535/c-class-exterior-right-front-three-quarter.jpeg?isig=0&q=80",
+            "https://imgd.aeplcdn.com/664x374/n/cw/ec/178535/c-class-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80",
+            "https://imgd.aeplcdn.com/664x374/n/cw/ec/178535/c-class-exterior-right-side-view.jpeg?isig=0&q=80",
+        ],
+    },
+    {
+        vehicleNumber: "XYZ5678",
+        vehicleModel: "Honda Accord",
+        contactNumber: "987-654-3210",
+        location: "Los Angeles, CA",
+        imageUrl: [
+            "https://imgd.aeplcdn.com/664x374/n/cw/ec/149525/a-class-limousine-exterior-right-front-three-quarter-5.jpeg?isig=0&q=80",
+            "https://imgd.aeplcdn.com/664x374/n/cw/ec/149525/a-class-limousine-exterior-rear-view.jpeg?isig=0&q=80",
+            "https://imgd.aeplcdn.com/664x374/n/cw/ec/153749/mercedes-benz-a-class-limousine-right-front-three-quarter13.jpeg?isig=0&wm=1&q=80",
+        ],
+    },
+];
+
+
+export { cleaners, drivers, cars, trucks, buses, serviceRecords, sell_cars,
+    tempo, packageData, employees, dailyRoutes, technicians, vehicleDocuments }
