@@ -43,6 +43,12 @@ const ProfileScreen = () => {
                         <Text style={styles.detailText}>john.doe@example.com</Text>
                     </View>
                 </View>
+                <Text style={styles.galleryTitle}>Gallery</Text>
+                <View style={styles.divider} />
+                <TouchableOpacity style={styles.galleryContainer}>
+                    <FontAwesome name="photo" size={24} color={Colors.primary} />
+                    <Text style={styles.galleryText}>All Photos</Text>
+                </TouchableOpacity>
                 <View style={styles.divider} />
                 <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
                     <Text style={styles.logoutButtonText}>Logout</Text>
@@ -122,11 +128,29 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginBottom: 10,
     },
+    galleryTitle: {
+        fontSize: 20,
+        fontWeight: '500',
+        color: Colors.primary,
+        alignSelf: 'flex-start',
+        marginTop: 2,
+    },
+    galleryContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 10,
+        width: '100%',
+    },
+    galleryText: {
+        fontSize: 16,
+        color: Colors.primary,
+        marginLeft: 10,
+    },
     divider: {
         width: '100%',
         height: 1,
         backgroundColor: '#E0E0E0',
-        marginBottom: 20,
+        marginVertical: 20,
     },
     logoutButton: {
         width: '100%',

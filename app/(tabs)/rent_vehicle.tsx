@@ -53,7 +53,7 @@ const SellVehicleScreen: React.FC = () => {
                             style={styles.pagerView}
                             initialPage={0}
                             onPageSelected={(e) => setActiveSlide(e.nativeEvent.position)}
-                            useNext={true} // Added useNext prop
+                            useNext={true}
                         >
                             {car.imageUrl.map((image, imageIndex) => renderPagerItem(image, imageIndex))}
                         </PagerView>
@@ -125,11 +125,11 @@ const styles = StyleSheet.create({
         overflow: "hidden",
     },
     carouselImage: {
-        width: "100%",
+        width: viewportWidth *0.9,
         height: 200,
     },
     pagerView: {
-        width: viewportWidth - 40,
+        width: viewportWidth *0.8,
         height: 200,
     },
     paginationContainer: {

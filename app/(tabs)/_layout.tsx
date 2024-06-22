@@ -25,7 +25,7 @@ export default function TabLayout() {
         options={{
           title: 'Vehicle Inspection',
           tabBarIcon: ({ color, focused }) => (
-            <MaterialCommunityIcons name={focused ? "file-document-edit" : "file-document-edit-outline"} size={24} color={color} />
+            <MaterialCommunityIcons name={focused ? "file-document-edit" : "file-document-edit-outline"} size={30} color={color} />
           ),
         }}
       />
@@ -34,14 +34,14 @@ export default function TabLayout() {
         options={{
           title: 'Rent Vehicle',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'car-sharp' : 'car'} size={24} color={color} />
+            <Ionicons name={focused ? 'car-sharp' : 'car'} size={30} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Explore',
+          title: 'Profile',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'person' : 'person-outline'} color={color} />
           ),
