@@ -45,7 +45,7 @@ const ProfileScreen = () => {
                 </View>
                 <Text style={styles.galleryTitle}>Gallery</Text>
                 <View style={styles.divider} />
-                <TouchableOpacity style={styles.galleryContainer}>
+                <TouchableOpacity onPress={()=> router.push('all_photos')} style={styles.galleryContainer}>
                     <FontAwesome name="photo" size={24} color={Colors.primary} />
                     <Text style={styles.galleryText}>All Photos</Text>
                 </TouchableOpacity>
