@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Colors } from '@/constants/Colors'; // Ensure to import your color constants
+import FloatingButton from '@/components/FloatingButton';
 
 const VehicleDetailsScreen: React.FC = () => {
   const vehicleDetails = {
@@ -98,6 +99,9 @@ const VehicleDetailsScreen: React.FC = () => {
         <Text style={styles.label}>Entry/Parking:</Text>
         <Text style={styles.value}>{vehicleDetails.entryParking}</Text>
       </View>
+
+      <FloatingButton />
+
     </ScrollView>
   );
 };

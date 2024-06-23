@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { StyleSheet, StatusBar, View, Text, Image, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import { useGlobalContext } from '@/context/GlobalProvider';
@@ -6,7 +5,7 @@ import { Redirect, router } from 'expo-router';
 import Loader from '@/components/loader';
 import { Colors } from '@/constants/Colors';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { AntDesign } from '@expo/vector-icons';
+import FloatingButton from '@/components/FloatingButton';
 
 const carouselImages = [
   'https://imgd.aeplcdn.com/664x374/n/cw/ec/107719/range-rover-exterior-right-front-three-quarter-46.jpeg?isig=0&q=80',
@@ -18,7 +17,6 @@ const { width: deviceWidth } = Dimensions.get('window');
 
 export default function HomeScreen() {
   const { isLogged, loading } = useGlobalContext();
-  const [showMore, setShowMore] = useState(false);
 
   if (!loading && isLogged) return <Redirect href="/(modals)/onbording" />;
 
@@ -30,26 +28,17 @@ export default function HomeScreen() {
     );
   }
 
-  const toggleShowMore = () => setShowMore(!showMore);
-
   return (
     <GestureHandlerRootView style={styles.container}>
       <ScrollView>
-        <View style={styles.carouselContainer}>
-          <Carousel
-            width={deviceWidth * 0.9}
-            height={deviceWidth * 0.6}
-            autoPlay
-            data={carouselImages}
-            renderItem={({ item }) => (
-              <Image source={{ uri: item }} style={styles.carouselImage} />
-            )}
-          />
+        <View style={styles.welcomeCard}>
+          <Text style={styles.welcomeCardText}>Welcome to,</Text>
+          <Text style={styles.welcomeCardText}>Tourist Junctions</Text>
         </View>
 
         <View style={styles.dividerContainer}>
           <View style={styles.divider}>
-            <Text style={styles.dividerText}>Lorem Ipsum</Text>
+            <Text style={styles.dividerText}>My Trip</Text>
           </View>
         </View>
 
@@ -62,83 +51,44 @@ export default function HomeScreen() {
             <Image source={require(`@/assets/images/package.png`)} style={styles.icon} />
             <Text style={styles.iconText}>Package Vehicle Booking</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('vehicle_servicing_history')} style={styles.gridItem}>
-            <Image source={require(`@/assets/images/vehicle_servicing_history.png`)} style={styles.icon} />
-            <Text style={styles.iconText}>Vehicle Servicing History</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('employee_list')} style={styles.gridItem}>
-            <Image source={require(`@/assets/images/staff_details.png`)} style={styles.icon} />
-            <Text style={styles.iconText}>Employee Details</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('drivers_list')} style={styles.gridItem}>
-            <Image source={require(`@/assets/images/drivers_list.png`)} style={styles.icon} />
-            <Text style={styles.iconText}>Driver’s List</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('cleaners_list')} style={styles.gridItem}>
-            <Image source={require(`@/assets/images/cleaners_list.png`)} style={styles.icon} />
-            <Text style={styles.iconText}>Cleaner’s List</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('vehicle_documents')} style={styles.gridItem}>
-            <Image source={require(`@/assets/images/vehicle_documents.png`)} style={styles.icon} />
-            <Text style={styles.iconText}>Vehicle Documents</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('all_vehicle_list')} style={styles.gridItem}>
-            <Image source={require(`@/assets/images/vehicle_management.png`)} style={styles.icon} />
-            <Text style={styles.iconText}>All Vehicle List</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('technician_support')} style={styles.gridItem}>
-            <Image source={require(`@/assets/images/technician_support.png`)} style={styles.icon} />
-            <Text style={styles.iconText}>Technician Support</Text>
-          </TouchableOpacity>
-
-          {showMore && (
-            <>
-              <TouchableOpacity onPress={() => router.push('vehicle_maintenance')} style={styles.gridItem}>
-                <Image source={require(`@/assets/images/vehicle_maintenance.png`)} style={styles.icon} />
-                <Text style={styles.iconText}>Vehicle Maintenance</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => router.push('vehicle_inspection')} style={styles.gridItem}>
-                <Image source={require(`@/assets/images/vehicle_inspection.png`)} style={styles.icon} />
-                <Text style={styles.iconText}>Vehicle Inspection</Text>
-              </TouchableOpacity>
-            </>
-          )}
         </View>
 
         <View style={styles.dividerContainer}>
           <View style={styles.divider}>
-            <Text style={styles.dividerText}>Lorem Ipsum</Text>
+            <Text style={styles.dividerText}>Completed Trips</Text>
           </View>
-        </View>
-        
-        <View style={styles.card}>
-          <Image
-            source={{ uri: 'https://via.placeholder.com/300x200.png?text=Random+Image' }}
-            style={styles.cardImage}
-          />
-          <Text style={styles.cardText}>This is a card</Text>
         </View>
 
-        <Text style={styles.whatsNewHeading}>What's New</Text>
-        <Image
-          source={{ uri: 'https://via.placeholder.com/300x200.png?text=Random+Image' }}
-          style={styles.whatsNewImage}
-        />
-        <View style={styles.socialMediaContainer}>
-          <View style={styles.socialMediaIcon}>
-          <AntDesign name="instagram" size={24} color={Colors.primary}  />
-            <Text style={styles.socialText}>Instagram</Text>
-          </View>
-          <View style={styles.socialMediaIcon}>
-          <AntDesign name="facebook-square" size={24} color={Colors.primary} />
-            <Text style={styles.socialText}>Facebook</Text>
-          </View>
-          <View style={styles.socialMediaIcon}>
-          <AntDesign name="youtube" size={24} color={Colors.primary} />
-            <Text style={styles.socialText}>YouTube</Text>
+        <View style={styles.grid}>
+          <TouchableOpacity onPress={() => router.push('daily_route_vehicles_complete')} style={styles.gridItem}>
+            <Image source={require(`@/assets/images/package_vehicle_booking_complete.png`)} style={styles.icon} />
+            <Text style={styles.iconText}>Daily Route Vehicles</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('package_vehicle_booking_complete')} style={styles.gridItem}>
+            <Image source={require(`@/assets/images/package_vehicle_booking_complete.png`)} style={styles.icon} />
+            <Text style={styles.iconText}>Package Vehicle Booking</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.dividerContainer}>
+          <View style={styles.divider}>
+            <Text style={styles.dividerText}>Technician Support</Text>
           </View>
         </View>
+        <View style={styles.carouselContainer}>
+          <Carousel
+            width={deviceWidth * 0.9}
+            height={deviceWidth * 0.6}
+            autoPlay
+            mode='parallax'
+            data={carouselImages}
+            renderItem={({ item }) => (
+              <Image source={{ uri: item }} style={styles.carouselImage} />
+            )}
+          />
+        </View>
       </ScrollView>
+      <FloatingButton />
     </GestureHandlerRootView>
   );
 }
@@ -149,9 +99,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     marginTop: StatusBar.currentHeight,
   },
+  welcomeCard: {
+    backgroundColor: Colors.secondary, 
+    padding: 20,
+    borderRadius: 15,
+    margin: 20,
+    alignItems: 'center',
+    width: deviceWidth * 0.9, 
+    height: deviceWidth * 0.4,
+    justifyContent:"center"
+  },
+  welcomeCardText: {
+    color: Colors.primary,
+    fontSize: 23,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   carouselContainer: {
     alignItems: 'center',
     marginVertical: 20,
+    marginBottom: 50
   },
   carouselImage: {
     height: deviceWidth * 0.6,
@@ -164,7 +131,6 @@ const styles = StyleSheet.create({
   },
   divider: {
     borderBottomWidth: 1,
-    borderBottomColor: Colors.secondary,
     width: '100%',
     position: 'relative',
     alignItems: 'center',
@@ -174,7 +140,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     paddingHorizontal: 5,
     top: -10,
-    color: Colors.secondary
   },
   grid: {
     flexDirection: 'row',
@@ -183,7 +148,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   gridItem: {
-    width: '33.33%',
+    width: '50%',
     alignItems: 'center',
     marginVertical: 10,
   },
@@ -235,12 +200,12 @@ const styles = StyleSheet.create({
   },
   cardText: {
     marginTop: 10,
-    marginBottom:5,
+    marginBottom: 5,
     fontSize: 13,
     textAlign: 'center',
-    paddingHorizontal:12,
-    paddingVertical:2,
-    fontWeight:"600"
+    paddingHorizontal: 12,
+    paddingVertical: 2,
+    fontWeight: "600"
   },
   whatsNewHeading: {
     fontSize: 24,
@@ -254,7 +219,7 @@ const styles = StyleSheet.create({
     height: deviceWidth * 0.5,
     borderRadius: 15,
     alignSelf: 'center',
-    marginBottom: 20,
+    marginVertical: 20,
   },
   socialMediaContainer: {
     flexDirection: 'row',

@@ -1,3 +1,4 @@
+import FloatingButton from '@/components/FloatingButton';
 import React from 'react';
 import {
     StyleSheet,
@@ -37,6 +38,7 @@ const GalleryGridScreen: React.FC = () => {
                 keyExtractor={(item, index) => index.toString()}
                 numColumns={numColumns}
             />
+            <FloatingButton />
         </SafeAreaView>
     );
 };

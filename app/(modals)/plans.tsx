@@ -15,8 +15,7 @@ const keyFeatures = [
 ];
 
 const plans = [
-  { name: "Monthly Plan", price: "₹ 299 / Month" },
-  { name: "Annual Plan", price: "₹ 999 / Yearly" },
+  { name: "Annual Plan", price: "₹ 599 / Yearly" },
 ];
 
 const PlansScreen: React.FC = () => {

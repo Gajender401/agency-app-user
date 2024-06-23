@@ -12,17 +12,22 @@ import {
     Alert,
     Platform,
     ActivityIndicator,
+    Image,
+    Dimensions,
 } from "react-native";
+import * as ImagePicker from 'expo-image-picker';
 import { BlurView } from 'expo-blur';
 import { Colors } from "@/constants/Colors";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { dailyRoutes } from "@/constants/dummy";
-import { router } from "expo-router";
+import FloatingButton from "@/components/FloatingButton";
 
 interface BlurOverlayProps {
     visible: boolean;
     onRequestClose: () => void;
 }
+
+const { width: deviceWidth } = Dimensions.get('window');
 
 const BlurOverlay: React.FC<BlurOverlayProps> = ({ visible, onRequestClose }) => (
     <Modal
@@ -39,10 +44,9 @@ const BlurOverlay: React.FC<BlurOverlayProps> = ({ visible, onRequestClose }) =>
 
 const DailyRouteVehicles: React.FC = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [showAddDriverModal, setShowAddDriverModal] = useState(false);
-    const [driverName, setDriverName] = useState("");
-    const [driverName2, setDriverName2] = useState("");
-    const [cleanerName, setCleanerName] = useState("");
+    const [showStartTripModal, setShowStartTripModal] = useState(false);
+    const [beforeJourneyNote, setBeforeJourneyNote] = useState("");
+    const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
 
     const handleDelete = () => {
@@ -51,33 +55,45 @@ const DailyRouteVehicles: React.FC = () => {
         setShowDeleteModal(false);
     };
 
-    const handleAddDriver = () => {
-        if (!driverName || !driverName2 || !cleanerName) {
-            Alert.alert("Please fill all fields.");
+    const handleStartTrip = () => {
+        if (!beforeJourneyNote || selectedPhotos.length === 0) {
+            Alert.alert("Please add a note and select photos.");
             return;
         }
 
-        const newDriverData = {
-            driverName,
-            driverName2,
-            cleanerName,
+        const tripData = {
+            beforeJourneyNote,
+            selectedPhotos,
         };
 
-        console.log("New Driver Data:", newDriverData);
+        console.log("Trip Data:", tripData);
 
         // Simulate loading state (you can replace this with actual API call)
         setLoading(true);
         setTimeout(() => {
             setLoading(false);
             resetForm();
-            Alert.alert("Success", "Driver added successfully!");
+            Alert.alert("Success", "Trip started successfully!");
+            setShowStartTripModal(false);
         }, 1500);
     };
 
     const resetForm = () => {
-        setDriverName("");
-        setDriverName2("");
-        setCleanerName("");
+        setBeforeJourneyNote("");
+        setSelectedPhotos([]);
+    };
+
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsMultipleSelection: true,
+            selectionLimit: 5,
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            setSelectedPhotos([...selectedPhotos, ...result.assets.map((asset: { uri: string }) => asset.uri)]);
+        }
     };
 
     return (
@@ -91,19 +107,12 @@ const DailyRouteVehicles: React.FC = () => {
                 />
             </View>
 
-            <TouchableOpacity onPress={() => router.push("add_daily_route_vehicles")} style={styles.addButton}>
-                <Text style={styles.addButtonText}>Add Route</Text>
-            </TouchableOpacity>
-
             <ScrollView style={styles.routesList}>
                 {dailyRoutes.map((route, index) => (
                     <View key={index} style={styles.card}>
                         <View style={styles.cardHeader}>
-                            <TouchableOpacity style={styles.editButton} onPress={() => setShowAddDriverModal(true)}>
-                                <Text style={styles.editButtonText}>Add Driver</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.editButton}>
-                                <Text style={styles.editButtonText}>Edit Route</Text>
+                            <TouchableOpacity style={styles.editButton} onPress={() => setShowStartTripModal(true)}>
+                                <Text style={styles.editButtonText}>Start Trip</Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => setShowDeleteModal(true)}>
                                 <MaterialIcons name="delete" size={24} color={Colors.darkBlue} />
@@ -111,13 +120,13 @@ const DailyRouteVehicles: React.FC = () => {
                         </View>
 
                         <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between" }} >
-                            <Text style={{ fontWeight: "semibold", fontSize: 14 }} >Departure</Text>
-                            <Text style={{ fontWeight: "semibold", fontSize: 14 }} >Destination</Text>
+                            <Text style={{ fontWeight: "600", fontSize: 14 }} >Departure</Text>
+                            <Text style={{ fontWeight: "600", fontSize: 14 }} >Destination</Text>
                         </View>
                         <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", marginVertical: 5 }} >
-                            <Text style={{ fontWeight: "semibold", fontSize: 15 }} >{route.departure}</Text>
+                            <Text style={{ fontWeight: "600", fontSize: 15 }} >{route.departure}</Text>
                             <MaterialIcons name="keyboard-double-arrow-right" size={24} color={Colors.darkBlue} />
-                            <Text style={{ fontWeight: "semibold", fontSize: 15 }} >{route.destination}</Text>
+                            <Text style={{ fontWeight: "600", fontSize: 15 }} >{route.destination}</Text>
                         </View>
 
                         <Text style={styles.cardText}>Vehicle Number: {route.vehicleNumber}</Text>
@@ -140,7 +149,7 @@ const DailyRouteVehicles: React.FC = () => {
 
                 <TouchableWithoutFeedback onPress={() => setShowDeleteModal(false)}>
                     <View style={styles.modalOverlay}>
-                        <View style={styles.modalContainer}>
+                        <View style={[styles.modalContainer, { height: 200 }]}>
                             <View style={styles.modalContent}>
                                 <Text style={styles.modalText}>Are you sure you want to delete this route?</Text>
                                 <View style={styles.modalButtons}>
@@ -157,66 +166,64 @@ const DailyRouteVehicles: React.FC = () => {
                 </TouchableWithoutFeedback>
             </Modal>
 
-            {/* Add Driver Modal */}
+            {/* Start Trip Modal */}
             <Modal
                 animationType="slide"
                 transparent={true}
-                visible={showAddDriverModal}
-                onRequestClose={() => setShowAddDriverModal(false)}
+                visible={showStartTripModal}
+                onRequestClose={() => setShowStartTripModal(false)}
             >
-                <BlurOverlay visible={showAddDriverModal} onRequestClose={() => setShowAddDriverModal(false)} />
+                <BlurOverlay visible={showStartTripModal} onRequestClose={() => setShowStartTripModal(false)} />
 
-                <TouchableWithoutFeedback onPress={() => setShowAddDriverModal(false)}>
-                    <View style={styles.modalOverlay}>
-                        <View style={styles.modalContainer}>
-                            <ScrollView style={styles.modalScroll}>
-                                <View style={styles.modalContent}>
-                                    <View style={styles.inputGroup}>
-                                        <Text style={styles.label}>Driver Name</Text>
-                                        <TextInput
-                                            style={styles.input}
-                                            value={driverName}
-                                            onChangeText={(text) => setDriverName(text)}
-                                        />
-                                    </View>
-                                    <View style={styles.inputGroup}>
-                                        <Text style={styles.label}>Driver Name 2</Text>
-                                        <TextInput
-                                            style={styles.input}
-                                            value={driverName2}
-                                            onChangeText={(text) => setDriverName2(text)}
-                                        />
-                                    </View>
-                                    <View style={styles.inputGroup}>
-                                        <Text style={styles.label}>Cleaner Name</Text>
-                                        <TextInput
-                                            style={styles.input}
-                                            value={cleanerName}
-                                            onChangeText={(text) => setCleanerName(text)}
-                                        />
-                                    </View>
-
-                                    <View style={styles.modalButtons}>
-                                        <TouchableOpacity style={[styles.modalButton, { backgroundColor: "#ccc" }]} onPress={resetForm}>
-                                            <Text style={styles.modalButtonText}>Cancel</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                            style={[styles.modalButton, { backgroundColor: Colors.darkBlue }]}
-                                            onPress={handleAddDriver}
-                                        >
-                                            {loading ? (
-                                                <ActivityIndicator color="#fff" />
-                                            ) : (
-                                                <Text style={[styles.modalButtonText, { color: "#fff" }]}>Add Driver</Text>
-                                            )}
-                                        </TouchableOpacity>
-                                    </View>
+                <TouchableOpacity onPress={() => setShowStartTripModal(false)} style={styles.modalOverlay}>
+                    <View style={styles.modalContainer}>
+                        <ScrollView style={styles.modalScroll}>
+                            <View style={styles.modalContent}>
+                                <View style={styles.inputGroup}>
+                                    <Text style={styles.label}>Before Journey Note</Text>
+                                    <TextInput
+                                        style={styles.input}
+                                        value={beforeJourneyNote}
+                                        onChangeText={(text) => setBeforeJourneyNote(text)}
+                                    />
                                 </View>
-                            </ScrollView>
-                        </View>
+                                <View style={styles.inputGroup}>
+                                    <Text style={styles.label}>Before Journey Photos</Text>
+                                    <TouchableOpacity style={styles.photoButton} onPress={pickImage}>
+                                        <Text style={styles.photoButtonText}>Select Photos</Text>
+                                    </TouchableOpacity>
+                                    <Text style={styles.maxPhotosText}>Max 5 photos</Text>
+                                    <ScrollView horizontal>
+                                        {selectedPhotos.map((photoUri, index) => (
+                                            <Image
+                                                key={index}
+                                                source={{ uri: photoUri }}
+                                                style={styles.photo}
+                                            />
+                                        ))}
+                                    </ScrollView>
+                                </View>
+
+                                <View style={styles.modalButtons}>
+                                    <TouchableOpacity
+                                        style={[styles.modalButton, { backgroundColor: Colors.darkBlue }]}
+                                        onPress={handleStartTrip}
+                                    >
+                                        {loading ? (
+                                            <ActivityIndicator color="#fff" />
+                                        ) : (
+                                            <Text style={[styles.modalButtonText, { color: "#fff" }]}>Start Trip</Text>
+                                        )}
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </ScrollView>
                     </View>
-                </TouchableWithoutFeedback>
+                </TouchableOpacity>
             </Modal>
+
+            <FloatingButton />
+
         </SafeAreaView>
     );
 };
@@ -285,7 +292,7 @@ const styles = StyleSheet.create({
     editButtonText: {
         color: "#fff",
         fontWeight: "bold",
-        fontSize:12
+        fontSize: 12,
     },
     cardText: {
         marginBottom: 8,
@@ -293,72 +300,88 @@ const styles = StyleSheet.create({
         fontWeight: "500",
         fontSize: 13,
     },
-    // Modal Styles
-    modalContainer: {
-        justifyContent: "center",
-        alignItems: "center",
-        marginHorizontal: 5,
-        marginVertical: 'auto'
-    },
-    modalOverlay: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    modalScroll: {
-        flex: 1,
-        paddingTop: Platform.OS === 'android' ? 20 : 0,
-        paddingHorizontal: 20,
-        marginVertical: 'auto'
-    },
-    modalContent: {
-        backgroundColor: "#fff",
-        padding: 20,
-        borderRadius: 10,
-        alignItems: "center",
-        elevation: 5,
-        maxHeight: 400,
-    },
+
     modalText: {
         marginBottom: 20,
         fontSize: 18,
         textAlign: "center",
     },
+
+    modalOverlay: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    modalContainer: {
+        width: deviceWidth * 0.8,
+        backgroundColor: "#fff",
+        borderRadius: 10,
+        padding: 20,
+        elevation: 5,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+    },
+    modalScroll: {
+        width: "100%",
+    },
+    modalContent: {
+        flex: 1,
+        justifyContent: "center",
+    },
     inputGroup: {
-        marginBottom: 15,
-        width: '100%'
+        marginBottom: 20,
     },
     label: {
+        fontWeight: "bold",
         marginBottom: 5,
-        fontSize: 13,
         color: Colors.secondary,
-        fontWeight:"500"
     },
     input: {
         borderColor: Colors.secondary,
         borderWidth: 1,
-        borderRadius: 10,
-        paddingHorizontal: 10,
-        height: 40,
-        width: '100%'
+        borderRadius: 5,
+        padding: 10,
+        color: Colors.secondary,
+    },
+    photoButton: {
+        backgroundColor: Colors.darkBlue,
+        paddingVertical: 10,
+        borderRadius: 5,
+        alignItems: "center",
+        marginBottom: 10,
+    },
+    photoButtonText: {
+        color: "#fff",
+        fontWeight: "bold",
+    },
+    maxPhotosText: {
+        color: Colors.secondary,
+        marginBottom: 10,
+    },
+    photo: {
+        width: 80,
+        height: 80,
+        borderRadius: 5,
+        marginRight: 10,
     },
     modalButtons: {
         flexDirection: "row",
-        justifyContent: "center",
-        marginTop: 20,
+        justifyContent: "space-between",
     },
     modalButton: {
+        flex: 1,
         paddingVertical: 10,
-        paddingHorizontal: 20,
         borderRadius: 5,
-        marginHorizontal: 10,
+        alignItems: "center",
     },
     modalButtonText: {
-        fontSize: 16,
         fontWeight: "bold",
     },
     overlay: {
         ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         justifyContent: 'center',
         alignItems: 'center',
     },

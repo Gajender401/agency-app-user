@@ -1,45 +1,12 @@
 {
   "expo": {
-    "name": "driver-project",
-    "slug": "driver-project",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "supportsTablet": true
+    "extra": {
+      "eas": {
+        "projectId": "da8130ba-d0cd-4cb6-8c22-9ec0b7e83b30"
+      }
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.gajender.driverproject"
-    },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
-    },
-    "plugins": [
-      "expo-router"
-    ],
-    "experiments": {
-      "typedRoutes": true
-    },
-    "extra": {
-      "router": {
-        "origin": false
-      },
-      "eas": {
-        "projectId": "99170966-4a04-4ad1-ac54-7b538e4bb910"
-      }
+      "package": "com.gajender.agencyprojectclient"
     }
   }
 }

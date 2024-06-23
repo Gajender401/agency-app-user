@@ -4,11 +4,9 @@ import {
   Text,
   StatusBar,
   StyleSheet,
-  TouchableOpacity,
   Image,
   SafeAreaView,
 } from "react-native";
-import { router } from "expo-router";
 import { Colors } from "@/constants/Colors";
 
 const TripCompletedScreen = () => {
@@ -22,11 +20,6 @@ const TripCompletedScreen = () => {
           <Text style={styles.successText}>
             Trip Completed Successfully
           </Text>
-          <TouchableOpacity onPress={() => router.push("/home")} style={styles.button}>
-            <Text style={styles.buttonText}>
-              Continue to Home
-            </Text>
-          </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
