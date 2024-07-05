@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -7,15 +7,46 @@ import {
   TextInput,
   SafeAreaView,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Colors } from "@/constants/Colors";
-import { packageData } from "@/constants/dummy";
 import FloatingButton from "@/components/FloatingButton";
+import { useGlobalContext } from "@/context/GlobalProvider";
 
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+
+  const year = date.getUTCFullYear();
+  const month = date.getUTCMonth() + 1; // Months are zero-indexed, so we add 1
+  const day = date.getUTCDate();
+
+  const formattedDate = `${month}/${day}/${year}`;
+
+  return formattedDate;
+}
 
 const PackageVehicleListScreen = () => {
+  const [packages, setPackages] = useState<Package[]>([]);
+  const [loading, setLoading] = useState(false);
+  const { apiCaller } = useGlobalContext();
+
+  const fetchPackages = async () => {
+    try {
+      setLoading(true);
+      const response = await apiCaller.get('/api/packageBooking');
+      setPackages(response.data.data);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchPackages();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
 
@@ -29,40 +60,43 @@ const PackageVehicleListScreen = () => {
         />
       </View>
 
-      {/* Package List */}
-      <ScrollView style={styles.packagesList}>
-        {packageData.map((pkg, index) => (
-          <View key={index} style={styles.card}>
-            <View style={styles.cardHeader}>
-              <TouchableOpacity style={styles.photosButton} onPress={() => router.push("all_photos")}>
-                <Text style={styles.photosButtonText}>Photos</Text>
+      {loading ? (
+        <ActivityIndicator size="large" color={Colors.darkBlue} />
+      ) : (
+        <ScrollView style={styles.packagesList}>
+          {packages.map((pkg, index) => (
+            <View key={index} style={styles.card}>
+              <View style={styles.cardHeader}>
+                <TouchableOpacity style={styles.photosButton} onPress={() => router.push("all_photos")}>
+                  <Text style={styles.photosButtonText}>Photos</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between" }} >
+                <Text style={{ fontWeight: "600", fontSize: 14 }} >Departure</Text>
+                <Text style={{ fontWeight: "600", fontSize: 14 }} >Destination</Text>
+              </View>
+              <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-around", marginVertical: 5 }} >
+                <Text style={{ fontWeight: "600", fontSize: 15 }} >{pkg.departurePlace}</Text>
+                <MaterialIcons name="keyboard-double-arrow-right" size={24} color={Colors.darkBlue} />
+                <Text style={{ fontWeight: "600", fontSize: 15 }} >{pkg.destinationPlace}</Text>
+              </View>
+
+              <Text style={styles.cardText}>Customer Name: <Text style={styles.textValue}>{pkg.customerName}</Text></Text>
+              <Text style={styles.cardText}>Journey Duration: <Text style={styles.textValue}>{formatDate(pkg.departureTime)} to {formatDate(pkg.returnTime)}</Text></Text>
+              <Text style={styles.cardText}>Vehicle Number: <Text style={styles.textValue}>{pkg.vehicle}</Text></Text>
+              <Text style={styles.cardText}>Other Vehicle: <Text style={styles.textValue}>{pkg.otherVehicle}</Text></Text>
+
+              <TouchableOpacity
+                style={styles.viewMoreButton}
+                onPress={() => router.push("package_vehicle_booking_more")}
+              >
+                <Text style={styles.viewMoreButtonText}>View More</Text>
               </TouchableOpacity>
             </View>
-
-            <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between" }} >
-              <Text style={{ fontWeight: "600", fontSize: 14 }} >Departure</Text>
-              <Text style={{ fontWeight: "600", fontSize: 14 }} >Destination</Text>
-            </View>
-            <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-around", marginVertical: 5 }} >
-              <Text style={{ fontWeight: "600", fontSize: 15 }} >{pkg.departurePlace}</Text>
-              <MaterialIcons name="keyboard-double-arrow-right" size={24} color={Colors.darkBlue} />
-              <Text style={{ fontWeight: "600", fontSize: 15 }} >{pkg.destinationPlace}</Text>
-            </View>
-
-            <Text style={styles.cardText}>Customer Name: {pkg.customerName}</Text>
-            <Text style={styles.cardText}>Journey Duration: {pkg.departureTime} to {pkg.returnTime}</Text>
-            <Text style={styles.cardText}>Vehicle Number: {pkg.vehicleNumber}</Text>
-            <Text style={styles.cardText}>Other Vehicle: {pkg.otherVehicleNumber}</Text>
-
-            <TouchableOpacity
-              style={styles.viewMoreButton}
-              onPress={() => router.push("package_vehicle_booking_more")}
-            >
-              <Text style={styles.viewMoreButtonText}>View More</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </ScrollView>
+          ))}
+        </ScrollView>
+      )}
       <FloatingButton />
     </SafeAreaView>
   );
@@ -150,6 +184,9 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     fontSize: 12,
+  },
+  textValue: {
+    color: "black",
   },
 });
 

@@ -18,7 +18,7 @@ const { width: deviceWidth } = Dimensions.get('window');
 export default function HomeScreen() {
   const { isLogged, loading } = useGlobalContext();
 
-  if (!loading && isLogged) return <Redirect href="/(modals)/onbording" />;
+  if (!loading && !isLogged) return <Redirect href="/(modals)/onbording" />;
 
   if (loading) {
     return (

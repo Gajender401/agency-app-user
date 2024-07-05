@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     View,
     StyleSheet,
@@ -7,16 +7,38 @@ import {
     SafeAreaView,
     ScrollView,
     TextInput,
+    Alert,
+    ActivityIndicator,
 } from "react-native";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
-import { dailyRoutes } from "@/constants/dummy";
 import { router } from "expo-router";
 import FloatingButton from "@/components/FloatingButton";
+import { useGlobalContext } from "@/context/GlobalProvider";
 
 
 const DailyRouteVehiclesComplete: React.FC = () => {
+    const [routes, setRoutes] = useState<DailyRoute[]>([]);
+    const [loading, setLoading] = useState(false);
 
+    const { apiCaller } = useGlobalContext();
+
+    useEffect(() => {
+        fetchRoutes();
+    }, []);
+
+    const fetchRoutes = async () => {
+        try {
+            setLoading(true);
+            const response = await apiCaller.get('/api/dailyRoute');
+            setRoutes(response.data.data);
+        } catch (error) {
+            console.error("Error fetching routes:", error);
+            Alert.alert("Error", "Failed to fetch routes. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -29,8 +51,11 @@ const DailyRouteVehiclesComplete: React.FC = () => {
                 />
             </View>
 
+            {loading ? (
+                <ActivityIndicator size="large" color={Colors.darkBlue} />
+            ) : (                
             <ScrollView style={styles.routesList}>
-                {dailyRoutes.map((route, index) => (
+                {routes.map((route, index) => (
                     <View key={index} style={styles.card}>
                         <View style={styles.cardHeader}>
                             <TouchableOpacity style={styles.photosButton} onPress={() => router.push('all_photos')}>
@@ -39,23 +64,35 @@ const DailyRouteVehiclesComplete: React.FC = () => {
                         </View>
 
                         <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between" }} >
-                            <Text style={{ fontWeight: "600", fontSize: 14 }} >Departure</Text>
-                            <Text style={{ fontWeight: "600", fontSize: 14 }} >Destination</Text>
-                        </View>
-                        <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", marginVertical: 5 }} >
-                            <Text style={{ fontWeight: "600", fontSize: 15 }} >{route.departure}</Text>
-                            <MaterialIcons name="keyboard-double-arrow-right" size={24} color={Colors.darkBlue} />
-                            <Text style={{ fontWeight: "600", fontSize: 15 }} >{route.destination}</Text>
-                        </View>
+                                <Text style={{ fontWeight: "600", fontSize: 14 }} >Departure</Text>
+                                <Text style={{ fontWeight: "600", fontSize: 14 }} >Destination</Text>
+                            </View>
+                            <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", marginVertical: 5 }} >
+                                <Text style={{ fontWeight: "600", fontSize: 15 }} >{route.departurePlace}</Text>
+                                <MaterialIcons name="keyboard-double-arrow-right" size={24} color={Colors.darkBlue} />
+                                <Text style={{ fontWeight: "600", fontSize: 15 }} >{route.destinationPlace}</Text>
+                            </View>
 
-                        <Text style={styles.cardText}>Vehicle Number: {route.vehicleNumber}</Text>
-                        <Text style={styles.cardText}>Departure Time: {route.departureTime}</Text>
-                        <Text style={styles.cardText}>Cleaner Name: {route.cleanerName}</Text>
-                        <Text style={styles.cardText}>Driver Name 1: {route.driverName1}</Text>
-                        <Text style={styles.cardText}>Driver Name 2: {route.driverName2}</Text>
+                            <Text style={styles.cardText}>
+                                Vehicle Number: <Text style={{ color: "black" }}>{route.vehicleNumber}</Text>
+                            </Text>
+                            <Text style={styles.cardText}>
+                                Departure Time: <Text style={{ color: "black" }}>{route.departureTime}</Text>
+                            </Text>
+                            <Text style={styles.cardText}>
+                                Cleaner Name: <Text style={{ color: "black" }}>{route.cleaner ? route.cleaner.name : "N/A"}</Text>
+                            </Text>
+                            <Text style={styles.cardText}>
+                                Primary Driver : <Text style={{ color: "black" }}>{route.primaryDriver ? route.primaryDriver.name : "N/A"}</Text>
+                            </Text>
+                            <Text style={styles.cardText}>
+                                Secondary Driver: <Text style={{ color: "black" }}>{route.secondaryDriver ? route.secondaryDriver.name : "N/A"}</Text>
+                            </Text>
+
                     </View>
                 ))}
             </ScrollView>
+            )}
             <FloatingButton />
         </SafeAreaView>
     );

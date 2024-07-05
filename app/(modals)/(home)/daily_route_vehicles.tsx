@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     View,
     Modal,
@@ -10,7 +10,6 @@ import {
     SafeAreaView,
     ScrollView,
     Alert,
-    Platform,
     ActivityIndicator,
     Image,
     Dimensions,
@@ -19,15 +18,15 @@ import * as ImagePicker from 'expo-image-picker';
 import { BlurView } from 'expo-blur';
 import { Colors } from "@/constants/Colors";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
-import { dailyRoutes } from "@/constants/dummy";
 import FloatingButton from "@/components/FloatingButton";
+import { useGlobalContext } from "@/context/GlobalProvider";
+
+const { width: deviceWidth } = Dimensions.get('window');
 
 interface BlurOverlayProps {
     visible: boolean;
     onRequestClose: () => void;
 }
-
-const { width: deviceWidth } = Dimensions.get('window');
 
 const BlurOverlay: React.FC<BlurOverlayProps> = ({ visible, onRequestClose }) => (
     <Modal
@@ -43,39 +42,75 @@ const BlurOverlay: React.FC<BlurOverlayProps> = ({ visible, onRequestClose }) =>
 );
 
 const DailyRouteVehicles: React.FC = () => {
+    const [routes, setRoutes] = useState<DailyRoute[]>([]);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showStartTripModal, setShowStartTripModal] = useState(false);
     const [beforeJourneyNote, setBeforeJourneyNote] = useState("");
     const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
+    const [selectedRoute, setSelectedRoute] = useState<DailyRoute | null>(null);
 
-    const handleDelete = () => {
-        // Implement delete logic here
-        console.log("Deleting route...");
-        setShowDeleteModal(false);
+    const { apiCaller } = useGlobalContext();
+
+    useEffect(() => {
+        fetchRoutes();
+    }, []);
+
+    const fetchRoutes = async () => {
+        try {
+            setLoading(true);
+            const response = await apiCaller.get('/api/dailyRoute');
+            setRoutes(response.data.data);
+        } catch (error) {
+            console.error("Error fetching routes:", error);
+            Alert.alert("Error", "Failed to fetch routes. Please try again.");
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleStartTrip = () => {
+    const handleDelete = async () => {
+        if (!selectedRoute) return;
+
+        try {
+            setLoading(true);
+            await apiCaller.delete(`/api/dailyRoutes/${selectedRoute._id}`);
+            fetchRoutes();
+            setShowDeleteModal(false);
+        } catch (error) {
+            console.error("Error deleting route:", error);
+            Alert.alert("Error", "Failed to delete route. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleStartTrip = async () => {
         if (!beforeJourneyNote || selectedPhotos.length === 0) {
             Alert.alert("Please add a note and select photos.");
             return;
         }
+        if (selectedRoute) {
+            const tripData = {
+                routeId: selectedRoute._id,
+                beforeJourneyNote,
+                beforeJourneyPhotos: selectedPhotos,
+            };
 
-        const tripData = {
-            beforeJourneyNote,
-            selectedPhotos,
-        };
-
-        console.log("Trip Data:", tripData);
-
-        // Simulate loading state (you can replace this with actual API call)
-        setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
-            resetForm();
-            Alert.alert("Success", "Trip started successfully!");
-            setShowStartTripModal(false);
-        }, 1500);
+            try {
+                setLoading(true);
+                await apiCaller.post('/api/startTrip', tripData);
+                resetForm();
+                Alert.alert("Success", "Trip started successfully!");
+                setShowStartTripModal(false);
+                fetchRoutes();
+            } catch (error) {
+                console.error("Error starting trip:", error);
+                Alert.alert("Error", "Failed to start trip. Please try again.");
+            } finally {
+                setLoading(false);
+            }
+        }
     };
 
     const resetForm = () => {
@@ -107,38 +142,61 @@ const DailyRouteVehicles: React.FC = () => {
                 />
             </View>
 
-            <ScrollView style={styles.routesList}>
-                {dailyRoutes.map((route, index) => (
-                    <View key={index} style={styles.card}>
-                        <View style={styles.cardHeader}>
-                            <TouchableOpacity style={styles.editButton} onPress={() => setShowStartTripModal(true)}>
-                                <Text style={styles.editButtonText}>Start Trip</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => setShowDeleteModal(true)}>
-                                <MaterialIcons name="delete" size={24} color={Colors.darkBlue} />
-                            </TouchableOpacity>
-                        </View>
+            {loading ? (
+                <ActivityIndicator size="large" color={Colors.darkBlue} />
+            ) : (
+                <ScrollView style={styles.routesList}>
+                    {routes.map((route) => (
+                        <View key={route._id} style={styles.card}>
+                            <View style={styles.cardHeader}>
+                                <TouchableOpacity
+                                    style={styles.editButton}
+                                    onPress={() => {
+                                        setSelectedRoute(route);
+                                        setShowStartTripModal(true);
+                                    }}
+                                >
+                                    <Text style={styles.editButtonText}>Start Trip</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => {
+                                    setSelectedRoute(route);
+                                    setShowDeleteModal(true);
+                                }}>
+                                    <MaterialIcons name="delete" size={24} color={Colors.darkBlue} />
+                                </TouchableOpacity>
+                            </View>
 
-                        <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between" }} >
-                            <Text style={{ fontWeight: "600", fontSize: 14 }} >Departure</Text>
-                            <Text style={{ fontWeight: "600", fontSize: 14 }} >Destination</Text>
-                        </View>
-                        <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", marginVertical: 5 }} >
-                            <Text style={{ fontWeight: "600", fontSize: 15 }} >{route.departure}</Text>
-                            <MaterialIcons name="keyboard-double-arrow-right" size={24} color={Colors.darkBlue} />
-                            <Text style={{ fontWeight: "600", fontSize: 15 }} >{route.destination}</Text>
-                        </View>
+                            <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between" }} >
+                                <Text style={{ fontWeight: "600", fontSize: 14 }} >Departure</Text>
+                                <Text style={{ fontWeight: "600", fontSize: 14 }} >Destination</Text>
+                            </View>
+                            <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", marginVertical: 5 }} >
+                                <Text style={{ fontWeight: "600", fontSize: 15 }} >{route.departurePlace}</Text>
+                                <MaterialIcons name="keyboard-double-arrow-right" size={24} color={Colors.darkBlue} />
+                                <Text style={{ fontWeight: "600", fontSize: 15 }} >{route.destinationPlace}</Text>
+                            </View>
 
-                        <Text style={styles.cardText}>Vehicle Number: {route.vehicleNumber}</Text>
-                        <Text style={styles.cardText}>Departure Time: {route.departureTime}</Text>
-                        <Text style={styles.cardText}>Cleaner Name: {route.cleanerName}</Text>
-                        <Text style={styles.cardText}>Driver Name 1: {route.driverName1}</Text>
-                        <Text style={styles.cardText}>Driver Name 2: {route.driverName2}</Text>
-                    </View>
-                ))}
-            </ScrollView>
+                            <Text style={styles.cardText}>
+                                Vehicle Number: <Text style={{ color: "black" }}>{route.vehicleNumber}</Text>
+                            </Text>
+                            <Text style={styles.cardText}>
+                                Departure Time: <Text style={{ color: "black" }}>{route.departureTime}</Text>
+                            </Text>
+                            <Text style={styles.cardText}>
+                                Cleaner Name: <Text style={{ color: "black" }}>{route.cleaner ? route.cleaner.name : "N/A"}</Text>
+                            </Text>
+                            <Text style={styles.cardText}>
+                                Primary Driver : <Text style={{ color: "black" }}>{route.primaryDriver ? route.primaryDriver.name : "N/A"}</Text>
+                            </Text>
+                            <Text style={styles.cardText}>
+                                Secondary Driver: <Text style={{ color: "black" }}>{route.secondaryDriver ? route.secondaryDriver.name : "N/A"}</Text>
+                            </Text>
 
-            {/* Delete Confirmation Modal */}
+                        </View>
+                    ))}
+                </ScrollView>
+            )}
+
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -166,7 +224,6 @@ const DailyRouteVehicles: React.FC = () => {
                 </TouchableWithoutFeedback>
             </Modal>
 
-            {/* Start Trip Modal */}
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -223,7 +280,6 @@ const DailyRouteVehicles: React.FC = () => {
             </Modal>
 
             <FloatingButton />
-
         </SafeAreaView>
     );
 };
@@ -248,18 +304,6 @@ const styles = StyleSheet.create({
         flex: 1,
         marginLeft: 10,
         color: Colors.secondary,
-    },
-    addButton: {
-        backgroundColor: Colors.darkBlue,
-        paddingVertical: 10,
-        borderRadius: 5,
-        alignItems: "center",
-        marginBottom: 20,
-        width: 140,
-    },
-    addButtonText: {
-        color: "#fff",
-        fontWeight: "bold",
     },
     routesList: {
         flex: 1,
@@ -300,13 +344,11 @@ const styles = StyleSheet.create({
         fontWeight: "500",
         fontSize: 13,
     },
-
     modalText: {
         marginBottom: 20,
         fontSize: 18,
         textAlign: "center",
     },
-
     modalOverlay: {
         flex: 1,
         justifyContent: "center",

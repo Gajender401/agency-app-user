@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Modal,
@@ -19,8 +19,8 @@ import { BlurView } from 'expo-blur';
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Colors } from "@/constants/Colors";
-import { packageData } from "@/constants/dummy";
 import FloatingButton from "@/components/FloatingButton";
+import { useGlobalContext } from "@/context/GlobalProvider";
 
 const { width: deviceWidth } = Dimensions.get('window');
 
@@ -28,6 +28,7 @@ interface BlurOverlayProps {
   visible: boolean;
   onRequestClose: () => void;
 }
+
 
 const BlurOverlay: React.FC<BlurOverlayProps> = ({ visible, onRequestClose }) => (
   <Modal
@@ -42,12 +43,48 @@ const BlurOverlay: React.FC<BlurOverlayProps> = ({ visible, onRequestClose }) =>
   </Modal>
 );
 
+function formatDate(dateString: string): string {
+  // Step 1: Parse the input date string into a Date object
+  const date = new Date(dateString);
+
+  // Step 2: Extract year, month, and day from the Date object
+  const year = date.getUTCFullYear();
+  const month = date.getUTCMonth() + 1; // Months are zero-indexed, so we add 1
+  const day = date.getUTCDate();
+
+  // Step 3: Format the date as "MM/DD/YYYY"
+  const formattedDate = `${month}/${day}/${year}`;
+
+  return formattedDate;
+}
+
+
 const PackageVehicleListScreen = () => {
   const [showStartTripModal, setShowStartTripModal] = useState(false);
   const [beforeJourneyNote, setBeforeJourneyNote] = useState("");
+  const [packages, setPackages] = useState<Package[]>([]);
   const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { apiCaller } = useGlobalContext();
+
+  const fetchPackages = async () => {
+    try {
+      setLoading(true);
+      const response = await apiCaller.get('/api/packageBooking');
+      console.log(response.data.data);
+      
+      setPackages(response.data.data);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchPackages();
+  }, []);
+
 
   const handleStartTrip = () => {
     if (!beforeJourneyNote || selectedPhotos.length === 0) {
@@ -110,8 +147,11 @@ const PackageVehicleListScreen = () => {
       </View>
 
       {/* Package List */}
+      {loading ? (
+        <ActivityIndicator size="large" color={Colors.darkBlue} />
+      ) : (
       <ScrollView style={styles.packagesList}>
-        {packageData.map((pkg, index) => (
+        {packages.map((pkg, index) => (
           <View key={index} style={styles.card}>
             <View style={styles.cardHeader}>
               <TouchableOpacity style={styles.editButton} onPress={() => setShowStartTripModal(true)}>
@@ -132,20 +172,23 @@ const PackageVehicleListScreen = () => {
               <Text style={{ fontWeight: "600", fontSize: 15 }} >{pkg.destinationPlace}</Text>
             </View>
 
-            <Text style={styles.cardText}>Customer Name: {pkg.customerName}</Text>
-            <Text style={styles.cardText}>Journey Duration: {pkg.departureTime} to {pkg.returnTime}</Text>
-            <Text style={styles.cardText}>Vehicle Number: {pkg.vehicleNumber}</Text>
-            <Text style={styles.cardText}>Other Vehicle: {pkg.otherVehicleNumber}</Text>
+            <Text style={styles.cardText}>Customer Name: <Text style={styles.textValue}>{pkg.customerName}</Text></Text>
+              <Text style={styles.cardText}>Journey Duration: <Text style={styles.textValue}>{formatDate(pkg.departureTime)} to {formatDate(pkg.returnTime)}</Text></Text>
+              {pkg.vehicle &&
+              <Text style={styles.cardText}>Vehicle Number: <Text style={styles.textValue}>{pkg.vehicle.number}</Text></Text>
+              }
+              <Text style={styles.cardText}>Other Vehicle: <Text style={styles.textValue}>{pkg.otherVehicle}</Text></Text>
 
             <TouchableOpacity
               style={styles.viewMoreButton}
-              onPress={() => router.push("package_vehicle_booking_more")}
+              onPress={() => router.push(`package_vehicle_booking_more/${pkg._id}`)}
             >
               <Text style={styles.viewMoreButtonText}>View More</Text>
             </TouchableOpacity>
           </View>
         ))}
       </ScrollView>
+      )}
 
 
       {/* Delete Confirmation Modal */}
@@ -401,6 +444,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 18,
     textAlign: "center",
+  },
+  textValue: {
+    color: "black",
   },
 });
 

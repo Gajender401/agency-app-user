@@ -30,12 +30,12 @@ export default function RootLayout() {
         <Stack.Screen name="(modals)/login" options={{ headerShown: false }} />
 
         <Stack.Screen name="(modals)/(home)/package_vehicle_booking" options={{ headerShadowVisible: false, headerTitle: "Package Vehicle booking", headerTitleAlign: "center" }} />
-        <Stack.Screen name="(modals)/(home)/package_vehicle_booking_more" options={{ headerShadowVisible: false, headerTitle: "Package Vehicle booking", headerTitleAlign: "center" }} />
+        <Stack.Screen name="(modals)/(home)/package_vehicle_booking_more/[pkgId]" options={{ headerShadowVisible: false, headerTitle: "Package Vehicle booking", headerTitleAlign: "center" }} />
         <Stack.Screen name="(modals)/(home)/package_vehicle_booking_complete" options={{ headerShadowVisible: false, headerTitle: "Package Vehicle booking", headerTitleAlign: "center" }} />
         <Stack.Screen name="(modals)/(home)/daily_route_vehicles" options={{ headerShadowVisible: false, headerTitle: "Daily Route Vehicles", headerTitleAlign: "center" }} />
         <Stack.Screen name="(modals)/(home)/daily_route_vehicles_complete" options={{ headerShadowVisible: false, headerTitle: "Daily Route Vehicles", headerTitleAlign: "center" }} />
         <Stack.Screen name="(modals)/plans" options={{ headerShadowVisible: false, headerTitle: "Premium", headerTitleAlign: "center" }} />
-        <Stack.Screen name="(modals)/all_photos" options={{ headerShadowVisible: false, headerTitle: "Gallery", headerTitleAlign: "center" }} />
+        <Stack.Screen name="(modals)/(home)/all_photos" options={{ headerShadowVisible: false, headerTitle: "Gallery", headerTitleAlign: "center" }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <Toast />
