@@ -6,6 +6,7 @@ import Loader from '@/components/loader';
 import { Colors } from '@/constants/Colors';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import FloatingButton from '@/components/FloatingButton';
+import * as SecureStore from "expo-secure-store";
 import { useEffect } from 'react';
 
 const carouselImages = [
@@ -17,9 +18,19 @@ const carouselImages = [
 const { width: deviceWidth } = Dimensions.get('window');
 
 export default function HomeScreen() {
-  const { isLogged, loading, token } = useGlobalContext();
+  const { loading, setIsLogged, setToken, isLogged } = useGlobalContext();
 
-  if (!loading && token && !isLogged) return <Redirect href="/(modals)/login" />;
+  if (!loading && !isLogged) return <Redirect href="/(modals)/login" />;
+
+  const logout = async () => {
+    try {
+      await SecureStore.deleteItemAsync("access_token");
+      setIsLogged(false);
+      setToken(null);
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
 
   if (loading) {
     return (
@@ -31,7 +42,12 @@ export default function HomeScreen() {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <ScrollView style={{flex:1}} >
+      <View style={styles.header}>
+        <TouchableOpacity onPress={logout} style={styles.logoutButton}>
+          <Text style={styles.logoutButtonText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
+      <ScrollView style={{ flex: 1 }} >
         <View style={styles.welcomeCard}>
           <Text style={styles.welcomeCardText}>Welcome to,</Text>
           <Text style={styles.welcomeCardText}>Tourist Junctions</Text>
@@ -100,15 +116,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     marginTop: StatusBar.currentHeight,
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    padding: 10,
+  },
+  logoutButton: {
+    backgroundColor: Colors.secondary,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+  },
+  logoutButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
   welcomeCard: {
-    backgroundColor: Colors.secondary, 
+    backgroundColor: Colors.secondary,
     padding: 20,
     borderRadius: 15,
     margin: 20,
     alignItems: 'center',
-    width: deviceWidth * 0.9, 
+    width: deviceWidth * 0.9,
     height: deviceWidth * 0.4,
-    justifyContent:"center"
+    justifyContent: "center"
   },
   welcomeCardText: {
     color: Colors.primary,

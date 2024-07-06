@@ -23,7 +23,7 @@ const LoginScreen = () => {
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const {setToken} = useGlobalContext()
+    const {setToken, setIsLogged} = useGlobalContext()
 
     const handleNext = async () => {
         setIsLoading(true);
@@ -36,6 +36,7 @@ const LoginScreen = () => {
             await SecureStore.setItemAsync("access_token", response.data.authToken);
             await SecureStore.setItemAsync("driver_id", response.data.data._id);
             setToken(response.data.authToken)
+            setIsLogged(true)
             router.push("/");
         } catch (error) {
             console.log(error);

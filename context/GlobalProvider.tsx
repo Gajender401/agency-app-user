@@ -40,7 +40,7 @@ interface GlobalProviderProps {
 const GlobalProvider: React.FC<GlobalProviderProps> = ({ children }) => {
   const [isLogged, setIsLogged] = useState<boolean>(false);
   const [token, setToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [userName, setUserName] = useState<string | null>(null);
   const [editData, setEditData] = useState<any>()
   const [driverId, setDriverId] = useState<string | null>(null);
@@ -54,8 +54,6 @@ const GlobalProvider: React.FC<GlobalProviderProps> = ({ children }) => {
           setIsLogged(true);
           setToken(res);
         } else {
-          setIsLogged(true);
-          console.log(token);
           setToken(token);
         }
       })
