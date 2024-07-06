@@ -21,7 +21,7 @@ const DailyRouteVehiclesComplete: React.FC = () => {
     const [routes, setRoutes] = useState<DailyRoute[]>([]);
     const [loading, setLoading] = useState(false);
 
-    const { apiCaller } = useGlobalContext();
+    const { apiCaller, driverId } = useGlobalContext();
 
     useEffect(() => {
         fetchRoutes();
@@ -30,8 +30,9 @@ const DailyRouteVehiclesComplete: React.FC = () => {
     const fetchRoutes = async () => {
         try {
             setLoading(true);
-            const response = await apiCaller.get('/api/dailyRoute');
-            setRoutes(response.data.data);
+            const response = await apiCaller.get(`/api/dailyRoute/driver/${driverId}`);
+            const filteredRoutes = response.data.data.filter((route: DailyRoute) => route.status === "COMPLETED");
+            setRoutes(filteredRoutes);
         } catch (error) {
             console.error("Error fetching routes:", error);
             Alert.alert("Error", "Failed to fetch routes. Please try again.");

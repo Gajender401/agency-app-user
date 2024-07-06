@@ -45,12 +45,15 @@ const DailyRouteVehicles: React.FC = () => {
     const [routes, setRoutes] = useState<DailyRoute[]>([]);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showStartTripModal, setShowStartTripModal] = useState(false);
+    const [showEndTripModal, setShowEndTripModal] = useState(false);
     const [beforeJourneyNote, setBeforeJourneyNote] = useState("");
+    const [afterJourneyNote, setAfterJourneyNote] = useState("");
     const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
+    const [afterJourneyPhotos, setAfterJourneyPhotos] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
     const [selectedRoute, setSelectedRoute] = useState<DailyRoute | null>(null);
 
-    const { apiCaller } = useGlobalContext();
+    const { apiCaller, driverId } = useGlobalContext();
 
     useEffect(() => {
         fetchRoutes();
@@ -59,8 +62,9 @@ const DailyRouteVehicles: React.FC = () => {
     const fetchRoutes = async () => {
         try {
             setLoading(true);
-            const response = await apiCaller.get('/api/dailyRoute');
-            setRoutes(response.data.data);
+            const response = await apiCaller.get(`/api/dailyRoute/driver/${driverId}`);
+            const filteredRoutes = response.data.data.filter((route: DailyRoute) => route.status !== "COMPLETED");
+            setRoutes(filteredRoutes);
         } catch (error) {
             console.error("Error fetching routes:", error);
             Alert.alert("Error", "Failed to fetch routes. Please try again.");
@@ -92,15 +96,13 @@ const DailyRouteVehicles: React.FC = () => {
         }
         if (selectedRoute) {
             const tripData = {
-                routeId: selectedRoute._id,
                 beforeJourneyNote,
-                beforeJourneyPhotos: selectedPhotos,
+                beforeJourneyPhotos: selectedPhotos
             };
 
             try {
                 setLoading(true);
-                await apiCaller.post('/api/startTrip', tripData);
-                resetForm();
+                await apiCaller.patch(`/api/dailyRoute/start?routeId=${selectedRoute._id}`, tripData);
                 Alert.alert("Success", "Trip started successfully!");
                 setShowStartTripModal(false);
                 fetchRoutes();
@@ -113,12 +115,33 @@ const DailyRouteVehicles: React.FC = () => {
         }
     };
 
-    const resetForm = () => {
-        setBeforeJourneyNote("");
-        setSelectedPhotos([]);
+    const handleEndTrip = async () => {
+        if (!afterJourneyNote || afterJourneyPhotos.length === 0) {
+            Alert.alert("Please add a note and select photos.");
+            return;
+        }
+        if (selectedRoute) {
+            const tripData = {
+                afterJourneyNote,
+                afterJourneyPhotos
+            };
+
+            try {
+                setLoading(true);
+                await apiCaller.patch(`/api/dailyRoute/complete?routeId=${selectedRoute._id}`, tripData);
+                Alert.alert("Success", "Trip ended successfully!");
+                setShowEndTripModal(false);
+                fetchRoutes();
+            } catch (error) {
+                console.error("Error ending trip:", error);
+                Alert.alert("Error", "Failed to end trip. Please try again.");
+            } finally {
+                setLoading(false);
+            }
+        }
     };
 
-    const pickImage = async () => {
+    const pickImage = async (type: 'before' | 'after') => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsMultipleSelection: true,
@@ -127,7 +150,12 @@ const DailyRouteVehicles: React.FC = () => {
         });
 
         if (!result.canceled) {
-            setSelectedPhotos([...selectedPhotos, ...result.assets.map((asset: { uri: string }) => asset.uri)]);
+            const newPhotos = result.assets.map((asset: { uri: string }) => asset.uri);
+            if (type === 'before') {
+                setSelectedPhotos([...selectedPhotos, ...newPhotos]);
+            } else {
+                setAfterJourneyPhotos([...afterJourneyPhotos, ...newPhotos]);
+            }
         }
     };
 
@@ -149,15 +177,27 @@ const DailyRouteVehicles: React.FC = () => {
                     {routes.map((route) => (
                         <View key={route._id} style={styles.card}>
                             <View style={styles.cardHeader}>
-                                <TouchableOpacity
-                                    style={styles.editButton}
-                                    onPress={() => {
-                                        setSelectedRoute(route);
-                                        setShowStartTripModal(true);
-                                    }}
-                                >
-                                    <Text style={styles.editButtonText}>Start Trip</Text>
-                                </TouchableOpacity>
+                                {route.status === "STARTED" ?
+                                    <TouchableOpacity
+                                        style={[styles.editButton, { backgroundColor: "red" }]}
+                                        onPress={() => {
+                                            setSelectedRoute(route);
+                                            setShowEndTripModal(true);
+                                        }}
+                                    >
+                                        <Text style={styles.editButtonText}>End Trip</Text>
+                                    </TouchableOpacity>
+                                    :
+                                    <TouchableOpacity
+                                        style={styles.editButton}
+                                        onPress={() => {
+                                            setSelectedRoute(route);
+                                            setShowStartTripModal(true);
+                                        }}
+                                    >
+                                        <Text style={styles.editButtonText}>Start Trip</Text>
+                                    </TouchableOpacity>
+                                }
                                 <TouchableOpacity onPress={() => {
                                     setSelectedRoute(route);
                                     setShowDeleteModal(true);
@@ -246,7 +286,7 @@ const DailyRouteVehicles: React.FC = () => {
                                 </View>
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.label}>Before Journey Photos</Text>
-                                    <TouchableOpacity style={styles.photoButton} onPress={pickImage}>
+                                    <TouchableOpacity style={styles.photoButton} onPress={() => pickImage('before')}>
                                         <Text style={styles.photoButtonText}>Select Photos</Text>
                                     </TouchableOpacity>
                                     <Text style={styles.maxPhotosText}>Max 5 photos</Text>
@@ -270,6 +310,61 @@ const DailyRouteVehicles: React.FC = () => {
                                             <ActivityIndicator color="#fff" />
                                         ) : (
                                             <Text style={[styles.modalButtonText, { color: "#fff" }]}>Start Trip</Text>
+                                        )}
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </ScrollView>
+                    </View>
+                </TouchableOpacity>
+            </Modal>
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={showEndTripModal}
+                onRequestClose={() => setShowEndTripModal(false)}
+            >
+                <BlurOverlay visible={showEndTripModal} onRequestClose={() => setShowEndTripModal(false)} />
+
+                <TouchableOpacity onPress={() => setShowEndTripModal(false)} style={styles.modalOverlay}>
+                    <View style={styles.modalContainer}>
+                        <ScrollView style={styles.modalScroll}>
+                            <View style={styles.modalContent}>
+                                <View style={styles.inputGroup}>
+                                    <Text style={styles.label}>After Journey Note</Text>
+                                    <TextInput
+                                        style={styles.input}
+                                        value={afterJourneyNote}
+                                        onChangeText={(text) => setAfterJourneyNote(text)}
+                                    />
+                                </View>
+                                <View style={styles.inputGroup}>
+                                    <Text style={styles.label}>After Journey Photos</Text>
+                                    <TouchableOpacity style={styles.photoButton} onPress={() => pickImage('after')}>
+                                        <Text style={styles.photoButtonText}>Select Photos</Text>
+                                    </TouchableOpacity>
+                                    <Text style={styles.maxPhotosText}>Max 5 photos</Text>
+                                    <ScrollView horizontal>
+                                        {afterJourneyPhotos.map((photoUri, index) => (
+                                            <Image
+                                                key={index}
+                                                source={{ uri: photoUri }}
+                                                style={styles.photo}
+                                            />
+                                        ))}
+                                    </ScrollView>
+                                </View>
+
+                                <View style={styles.modalButtons}>
+                                    <TouchableOpacity
+                                        style={[styles.modalButton, { backgroundColor: Colors.darkBlue }]}
+                                        onPress={handleEndTrip}
+                                    >
+                                        {loading ? (
+                                            <ActivityIndicator color="#fff" />
+                                        ) : (
+                                            <Text style={[styles.modalButtonText, { color: "#fff" }]}>End Trip</Text>
                                         )}
                                     </TouchableOpacity>
                                 </View>

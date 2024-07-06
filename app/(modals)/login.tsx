@@ -8,18 +8,41 @@ import {
     TextInput,
     SafeAreaView,
     Image,
+    Alert,
+    ActivityIndicator,
 } from "react-native";
 import { router } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import Checkbox from 'expo-checkbox';
+import axios from 'axios';
+import * as SecureStore from "expo-secure-store";
+import { useGlobalContext } from '@/context/GlobalProvider';
 
 const LoginScreen = () => {
-    const [username, setUsername] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const {setToken} = useGlobalContext()
 
-    const handleNext = () => {
-        router.push("/(modals)/welcome");
+    const handleNext = async () => {
+        setIsLoading(true);
+        let data = {
+            'password': password,
+            'mobileNumber': phoneNumber
+        };
+        try {
+            const response = await axios.post(`${process.env.EXPO_PUBLIC_URL}/api/user/login`, data);
+            await SecureStore.setItemAsync("access_token", response.data.authToken);
+            await SecureStore.setItemAsync("driver_id", response.data.data._id);
+            setToken(response.data.authToken)
+            router.push("/");
+        } catch (error) {
+            console.log(error);
+            Alert.alert("Login Failed", "Please check your credentials and try again.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -27,7 +50,7 @@ const LoginScreen = () => {
             <StatusBar barStyle="dark-content" />
             <Image style={styles.wave_image} source={require('@/assets/images/wave.png')} />
 
-            <View style={{marginTop:150}} >
+            <View style={{ marginTop: 150 }} >
                 <Text style={styles.welcomeText}>Welcome</Text>
                 <Text style={styles.welcomeText}>Back</Text>
             </View>
@@ -35,11 +58,12 @@ const LoginScreen = () => {
             <View style={styles.innerContainer} >
                 <View style={styles.inputContainer}>
                     <TextInput
-                        placeholder="Username"
-                        value={username}
-                        onChangeText={setUsername}
+                        placeholder="Phone Number"
+                        value={phoneNumber}
+                        onChangeText={setPhoneNumber}
                         style={styles.input}
                         placeholderTextColor="#FFFFFF"
+                        keyboardType="phone-pad"
                     />
                     <TextInput
                         placeholder="Password"
@@ -57,36 +81,18 @@ const LoginScreen = () => {
                             />
                             <Text style={styles.rememberMeText}>Remember Me</Text>
                         </View>
-                        <TouchableOpacity onPress={()=>router.push("/(modals)/forgotPassword")} >
+                        <TouchableOpacity onPress={() => router.push("/(modals)/forgotPassword")} >
                             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
 
-                <TouchableOpacity onPress={handleNext} style={styles.button}>
-                    <Text style={styles.buttonText}>Login</Text>
-                </TouchableOpacity>
-
-                <View style={styles.dividerContainer}>
-                    <View style={styles.divider} />
-                    <Text style={styles.dividerText}>Or Login With</Text>
-                    <View style={styles.divider} />
-                </View>
-
-                <View style={styles.socialContainer}>
-                    <TouchableOpacity style={styles.socialButton}>
-                        <Text style={styles.socialButtonText}>Google</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.socialButton}>
-                        <Text style={styles.socialButtonText}>Facebook</Text>
-                    </TouchableOpacity>
-                </View>
-
-                <TouchableOpacity style={styles.signUpContainer}>
-                    <Text style={styles.signUpText}>Don’t Have an account? </Text>
-                    <TouchableOpacity onPress={()=> router.push("/(modals)/signup")} >
-                    <Text style={{fontWeight:"800"}} >Sign Up</Text>
-                    </TouchableOpacity>
+                <TouchableOpacity onPress={handleNext} style={styles.button} disabled={isLoading}>
+                    {isLoading ? (
+                        <ActivityIndicator color={Colors.primary} />
+                    ) : (
+                        <Text style={styles.buttonText}>Login</Text>
+                    )}
                 </TouchableOpacity>
             </View>
 
@@ -153,6 +159,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         paddingHorizontal: 50,
         borderColor: Colors.primary,
+        minWidth: 150,
     },
     buttonText: {
         fontSize: 21,

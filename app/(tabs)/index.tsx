@@ -6,6 +6,7 @@ import Loader from '@/components/loader';
 import { Colors } from '@/constants/Colors';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import FloatingButton from '@/components/FloatingButton';
+import { useEffect } from 'react';
 
 const carouselImages = [
   'https://imgd.aeplcdn.com/664x374/n/cw/ec/107719/range-rover-exterior-right-front-three-quarter-46.jpeg?isig=0&q=80',
@@ -16,9 +17,9 @@ const carouselImages = [
 const { width: deviceWidth } = Dimensions.get('window');
 
 export default function HomeScreen() {
-  const { isLogged, loading } = useGlobalContext();
+  const { isLogged, loading, token } = useGlobalContext();
 
-  if (!loading && !isLogged) return <Redirect href="/(modals)/onbording" />;
+  if (!loading && token && !isLogged) return <Redirect href="/(modals)/login" />;
 
   if (loading) {
     return (
@@ -30,7 +31,7 @@ export default function HomeScreen() {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <ScrollView>
+      <ScrollView style={{flex:1}} >
         <View style={styles.welcomeCard}>
           <Text style={styles.welcomeCardText}>Welcome to,</Text>
           <Text style={styles.welcomeCardText}>Tourist Junctions</Text>

@@ -8,6 +8,7 @@ interface DailyRoute {
   cleaner: Cleaner | null;
   departureTime: string;
   instructions: string;
+  status: "STARTED" | "COMPLETED"
 }
 
 interface Package {
@@ -56,4 +57,5 @@ interface Package {
   instructions: string;
   createdAt: string;
   updatedAt: string;
+  status: "STARTED" | "COMPLETED"
 }

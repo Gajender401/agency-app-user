@@ -19,7 +19,7 @@ function formatDate(dateString: string): string {
   const date = new Date(dateString);
 
   const year = date.getUTCFullYear();
-  const month = date.getUTCMonth() + 1; // Months are zero-indexed, so we add 1
+  const month = date.getUTCMonth() + 1;
   const day = date.getUTCDate();
 
   const formattedDate = `${month}/${day}/${year}`;
@@ -30,13 +30,14 @@ function formatDate(dateString: string): string {
 const PackageVehicleListScreen = () => {
   const [packages, setPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState(false);
-  const { apiCaller } = useGlobalContext();
+  const { apiCaller, driverId } = useGlobalContext();
 
   const fetchPackages = async () => {
     try {
       setLoading(true);
-      const response = await apiCaller.get('/api/packageBooking');
-      setPackages(response.data.data);
+      const response = await apiCaller.get(`/api/packageBooking/driver/${driverId}`);
+      const filteredRoutes = response.data.data.filter((route: Package) => route.status === "COMPLETED");
+      setPackages(filteredRoutes);
     } catch (err) {
       console.log(err);
     } finally {
@@ -84,7 +85,9 @@ const PackageVehicleListScreen = () => {
 
               <Text style={styles.cardText}>Customer Name: <Text style={styles.textValue}>{pkg.customerName}</Text></Text>
               <Text style={styles.cardText}>Journey Duration: <Text style={styles.textValue}>{formatDate(pkg.departureTime)} to {formatDate(pkg.returnTime)}</Text></Text>
-              <Text style={styles.cardText}>Vehicle Number: <Text style={styles.textValue}>{pkg.vehicle}</Text></Text>
+              {pkg.vehicle &&
+                <Text style={styles.cardText}>Vehicle Number: <Text style={styles.textValue}>{pkg.vehicle.number}</Text></Text>
+              }
               <Text style={styles.cardText}>Other Vehicle: <Text style={styles.textValue}>{pkg.otherVehicle}</Text></Text>
 
               <TouchableOpacity

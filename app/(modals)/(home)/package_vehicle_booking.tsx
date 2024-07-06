@@ -29,7 +29,6 @@ interface BlurOverlayProps {
   onRequestClose: () => void;
 }
 
-
 const BlurOverlay: React.FC<BlurOverlayProps> = ({ visible, onRequestClose }) => (
   <Modal
     animationType="fade"
@@ -44,84 +43,112 @@ const BlurOverlay: React.FC<BlurOverlayProps> = ({ visible, onRequestClose }) =>
 );
 
 function formatDate(dateString: string): string {
-  // Step 1: Parse the input date string into a Date object
   const date = new Date(dateString);
-
-  // Step 2: Extract year, month, and day from the Date object
   const year = date.getUTCFullYear();
-  const month = date.getUTCMonth() + 1; // Months are zero-indexed, so we add 1
+  const month = date.getUTCMonth() + 1;
   const day = date.getUTCDate();
-
-  // Step 3: Format the date as "MM/DD/YYYY"
-  const formattedDate = `${month}/${day}/${year}`;
-
-  return formattedDate;
+  return `${month}/${day}/${year}`;
 }
-
 
 const PackageVehicleListScreen = () => {
   const [showStartTripModal, setShowStartTripModal] = useState(false);
+  const [showEndTripModal, setShowEndTripModal] = useState(false);
   const [beforeJourneyNote, setBeforeJourneyNote] = useState("");
+  const [afterJourneyNote, setAfterJourneyNote] = useState("");
   const [packages, setPackages] = useState<Package[]>([]);
   const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
+  const [afterJourneyPhotos, setAfterJourneyPhotos] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const { apiCaller } = useGlobalContext();
+  const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
+  const { apiCaller, driverId } = useGlobalContext();
 
   const fetchPackages = async () => {
     try {
       setLoading(true);
-      const response = await apiCaller.get('/api/packageBooking');
-      console.log(response.data.data);
-      
-      setPackages(response.data.data);
+      const response = await apiCaller.get(`/api/packageBooking/driver/${driverId}`);
+      const filteredRoutes = response.data.data.filter((route: Package) => route.status !== "COMPLETED");
+      setPackages(filteredRoutes);
     } catch (err) {
-      console.log(err);
+      console.error("Error fetching packages:", err);
+      Alert.alert("Error", "Failed to fetch packages. Please try again.");
     } finally {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchPackages();
   }, []);
 
-
-  const handleStartTrip = () => {
-    if (!beforeJourneyNote || selectedPhotos.length === 0) {
-      Alert.alert("Please add a note and select photos.");
+  const handleStartTrip = async () => {
+    if (!beforeJourneyNote || selectedPhotos.length === 0 || !selectedPackage) {
+      Alert.alert("Please add a note, select photos, and select a package.");
       return;
     }
 
     const tripData = {
       beforeJourneyNote,
-      selectedPhotos,
+      beforeJourneyPhotos: selectedPhotos
     };
 
-    console.log("Trip Data:", tripData);
-
-    // Simulate loading state (you can replace this with actual API call)
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      resetForm();
+    try {
+      setLoading(true);
+      await apiCaller.patch(`/api/packageBooking/start?bookingId=${selectedPackage._id}`, tripData);
       Alert.alert("Success", "Trip started successfully!");
       setShowStartTripModal(false);
-    }, 1500);
+      fetchPackages();
+    } catch (error) {
+      console.error("Error starting trip:", error);
+      Alert.alert("Error", "Failed to start trip. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDelete = () => {
-    // Implement delete logic here
-    console.log("Deleting route...");
-    setShowDeleteModal(false);
+  const handleEndTrip = async () => {
+    if (!afterJourneyNote || afterJourneyPhotos.length === 0 || !selectedPackage) {
+      Alert.alert("Please add a note, select photos, and select a package.");
+      return;
+    }
+
+    const tripData = {
+      afterJourneyNote,
+      afterJourneyPhotos
+    };
+
+    try {
+      setLoading(true);
+      await apiCaller.patch(`/api/packageBooking/finalize?bookingId=${selectedPackage._id}`, tripData);
+      Alert.alert("Success", "Trip ended successfully!");
+      setShowEndTripModal(false);
+      fetchPackages();
+    } catch (error) {
+      console.error("Error ending trip:", error);
+      Alert.alert("Error", "Failed to end trip. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const resetForm = () => {
-    setBeforeJourneyNote("");
-    setSelectedPhotos([]);
+  const handleDelete = async () => {
+    if (!selectedPackage) return;
+
+    try {
+      setLoading(true);
+      await apiCaller.delete(`/api/packageBooking/${selectedPackage._id}`);
+      fetchPackages();
+      setShowDeleteModal(false);
+    } catch (error) {
+      console.error("Error deleting package:", error);
+      Alert.alert("Error", "Failed to delete package. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const pickImage = async () => {
-    let result: ImagePicker.ImagePickerResult = await ImagePicker.launchImageLibraryAsync({
+  const pickImage = async (type: 'before' | 'after') => {
+    let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsMultipleSelection: true,
       selectionLimit: 5,
@@ -129,14 +156,17 @@ const PackageVehicleListScreen = () => {
     });
 
     if (!result.canceled) {
-      setSelectedPhotos([...selectedPhotos, ...result.assets.map((asset) => asset.uri)]);
+      const newPhotos = result.assets.map((asset) => asset.uri);
+      if (type === 'before') {
+        setSelectedPhotos([...selectedPhotos, ...newPhotos]);
+      } else {
+        setAfterJourneyPhotos([...afterJourneyPhotos, ...newPhotos]);
+      }
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-
-      {/* Search bar */}
       <View style={styles.searchContainer}>
         <FontAwesome5 name="search" size={18} color={Colors.secondary} />
         <TextInput
@@ -146,52 +176,70 @@ const PackageVehicleListScreen = () => {
         />
       </View>
 
-      {/* Package List */}
       {loading ? (
         <ActivityIndicator size="large" color={Colors.darkBlue} />
       ) : (
-      <ScrollView style={styles.packagesList}>
-        {packages.map((pkg, index) => (
-          <View key={index} style={styles.card}>
-            <View style={styles.cardHeader}>
-              <TouchableOpacity style={styles.editButton} onPress={() => setShowStartTripModal(true)}>
-                <Text style={styles.editButtonText}>Start Trip</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setShowDeleteModal(true)}>
-                <MaterialIcons name="delete" size={24} color={Colors.darkBlue} />
-              </TouchableOpacity>
-            </View>
+        <ScrollView style={styles.packagesList}>
+          {packages.map((pkg) => (
+            <View key={pkg._id} style={styles.card}>
+              <View style={styles.cardHeader}>
+                {pkg.status === "STARTED" ? (
+                  <TouchableOpacity
+                    style={[styles.editButton, { backgroundColor: "red" }]}
+                    onPress={() => {
+                      setSelectedPackage(pkg);
+                      setShowEndTripModal(true);
+                    }}
+                  >
+                    <Text style={styles.editButtonText}>End Trip</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    style={styles.editButton}
+                    onPress={() => {
+                      setSelectedPackage(pkg);
+                      setShowStartTripModal(true);
+                    }}
+                  >
+                    <Text style={styles.editButtonText}>Start Trip</Text>
+                  </TouchableOpacity>
+                )}
+                <TouchableOpacity onPress={() => {
+                  setSelectedPackage(pkg);
+                  setShowDeleteModal(true);
+                }}>
+                  <MaterialIcons name="delete" size={24} color={Colors.darkBlue} />
+                </TouchableOpacity>
+              </View>
 
-            <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between" }} >
-              <Text style={{ fontWeight: "600", fontSize: 14 }} >Departure</Text>
-              <Text style={{ fontWeight: "600", fontSize: 14 }} >Destination</Text>
-            </View>
-            <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-around", marginVertical: 5 }} >
-              <Text style={{ fontWeight: "600", fontSize: 15 }} >{pkg.departurePlace}</Text>
-              <MaterialIcons name="keyboard-double-arrow-right" size={24} color={Colors.darkBlue} />
-              <Text style={{ fontWeight: "600", fontSize: 15 }} >{pkg.destinationPlace}</Text>
-            </View>
+              <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between" }}>
+                <Text style={{ fontWeight: "600", fontSize: 14 }}>Departure</Text>
+                <Text style={{ fontWeight: "600", fontSize: 14 }}>Destination</Text>
+              </View>
+              <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-around", marginVertical: 5 }}>
+                <Text style={{ fontWeight: "600", fontSize: 15 }}>{pkg.departurePlace}</Text>
+                <MaterialIcons name="keyboard-double-arrow-right" size={24} color={Colors.darkBlue} />
+                <Text style={{ fontWeight: "600", fontSize: 15 }}>{pkg.destinationPlace}</Text>
+              </View>
 
-            <Text style={styles.cardText}>Customer Name: <Text style={styles.textValue}>{pkg.customerName}</Text></Text>
+              <Text style={styles.cardText}>Customer Name: <Text style={styles.textValue}>{pkg.customerName}</Text></Text>
               <Text style={styles.cardText}>Journey Duration: <Text style={styles.textValue}>{formatDate(pkg.departureTime)} to {formatDate(pkg.returnTime)}</Text></Text>
               {pkg.vehicle &&
-              <Text style={styles.cardText}>Vehicle Number: <Text style={styles.textValue}>{pkg.vehicle.number}</Text></Text>
+                <Text style={styles.cardText}>Vehicle Number: <Text style={styles.textValue}>{pkg.vehicle.number}</Text></Text>
               }
               <Text style={styles.cardText}>Other Vehicle: <Text style={styles.textValue}>{pkg.otherVehicle}</Text></Text>
 
-            <TouchableOpacity
-              style={styles.viewMoreButton}
-              onPress={() => router.push(`package_vehicle_booking_more/${pkg._id}`)}
-            >
-              <Text style={styles.viewMoreButtonText}>View More</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </ScrollView>
+              <TouchableOpacity
+                style={styles.viewMoreButton}
+                onPress={() => router.push(`package_vehicle_booking_more/${pkg._id}`)}
+              >
+                <Text style={styles.viewMoreButtonText}>View More</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </ScrollView>
       )}
 
-
-      {/* Delete Confirmation Modal */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -204,7 +252,7 @@ const PackageVehicleListScreen = () => {
           <View style={styles.modalOverlay}>
             <View style={[styles.modalContainer, { height: 200 }]}>
               <View style={styles.modalContent}>
-                <Text style={styles.modalText}>Are you sure you want to delete this route?</Text>
+                <Text style={styles.modalText}>Are you sure you want to delete this package?</Text>
                 <View style={styles.modalButtons}>
                   <TouchableOpacity style={[styles.modalButton, { backgroundColor: "#ccc" }]} onPress={() => setShowDeleteModal(false)}>
                     <Text style={styles.modalButtonText}>Cancel</Text>
@@ -219,7 +267,6 @@ const PackageVehicleListScreen = () => {
         </TouchableWithoutFeedback>
       </Modal>
 
-      {/* Start Trip Modal */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -241,8 +288,8 @@ const PackageVehicleListScreen = () => {
                   />
                 </View>
                 <View style={styles.inputGroup}>
-                  <Text style={styles.label}>Before Journey </Text>
-                  <TouchableOpacity style={styles.photoButton} onPress={pickImage}>
+                  <Text style={styles.label}>Before Journey Photos</Text>
+                  <TouchableOpacity style={styles.photoButton} onPress={() => pickImage('before')}>
                     <Text style={styles.photoButtonText}>Select Photos</Text>
                   </TouchableOpacity>
                   <Text style={styles.maxPhotosText}>Max 5 photos</Text>
@@ -274,6 +321,62 @@ const PackageVehicleListScreen = () => {
           </View>
         </TouchableOpacity>
       </Modal>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showEndTripModal}
+        onRequestClose={() => setShowEndTripModal(false)}
+      >
+        <BlurOverlay visible={showEndTripModal} onRequestClose={() => setShowEndTripModal(false)} />
+
+        <TouchableOpacity onPress={() => setShowEndTripModal(false)} style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <ScrollView style={styles.modalScroll}>
+              <View style={styles.modalContent}>
+                <View style={styles.inputGroup}>
+                  <Text style={styles.label}>After Journey Note</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={afterJourneyNote}
+                    onChangeText={(text) => setAfterJourneyNote(text)}
+                  />
+                </View>
+                <View style={styles.inputGroup}>
+                  <Text style={styles.label}>After Journey Photos</Text>
+                  <TouchableOpacity style={styles.photoButton} onPress={() => pickImage('after')}>
+                    <Text style={styles.photoButtonText}>Select Photos</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.maxPhotosText}>Max 5 photos</Text>
+                  <ScrollView horizontal>
+                    {afterJourneyPhotos.map((photoUri, index) => (
+                      <Image
+                        key={index}
+                        source={{ uri: photoUri }}
+                        style={styles.photo}
+                      />
+                    ))}
+                  </ScrollView>
+                </View>
+
+                <View style={styles.modalButtons}>
+                  <TouchableOpacity
+                    style={[styles.modalButton, { backgroundColor: Colors.darkBlue }]}
+                    onPress={handleEndTrip}
+                  >
+                    {loading ? (
+                      <ActivityIndicator color="#fff" />
+                    ) : (
+                      <Text style={[styles.modalButtonText, { color: "#fff" }]}>End Trip</Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </ScrollView>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+
       <FloatingButton />
     </SafeAreaView>
   );
@@ -299,18 +402,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
     color: Colors.secondary,
-  },
-  addButton: {
-    backgroundColor: Colors.darkBlue,
-    paddingVertical: 10,
-    borderRadius: 5,
-    alignItems: "center",
-    marginBottom: 20,
-    width: 140,
-  },
-  addButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
   },
   packagesList: {
     flex: 1,
