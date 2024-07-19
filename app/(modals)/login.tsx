@@ -32,7 +32,7 @@ const LoginScreen = () => {
             'mobileNumber': phoneNumber
         };
         try {
-            const response = await axios.post(`${process.env.EXPO_PUBLIC_URL}/api/user/login`, data);
+            const response = await axios.post(`https://api.touristsjunction.com/api/user/login`, data);
             await SecureStore.setItemAsync("access_token", response.data.authToken);
             await SecureStore.setItemAsync("driver_id", response.data.data._id);
             setToken(response.data.authToken)

@@ -9,19 +9,57 @@ import {
     TextInput,
     Alert,
     ActivityIndicator,
+    Modal,
 } from "react-native";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import { router } from "expo-router";
 import FloatingButton from "@/components/FloatingButton";
 import { useGlobalContext } from "@/context/GlobalProvider";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { BlurView } from "expo-blur";
+
+function timestampToTime(timestamp: string): string {
+    const date = new Date(timestamp);
+    let hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+    const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    const formattedHours = hours.toString().padStart(2, '0');
+
+    return `${formattedHours}:${minutes}:${seconds} ${ampm}`;
+}
+
+
+interface BlurOverlayProps {
+    visible: boolean;
+    onRequestClose: () => void;
+}
+
+const BlurOverlay: React.FC<BlurOverlayProps> = ({ visible, onRequestClose }) => (
+    <Modal
+        animationType="fade"
+        transparent={true}
+        visible={visible}
+        onRequestClose={onRequestClose}
+    >
+        <TouchableWithoutFeedback onPress={onRequestClose}>
+            <BlurView intensity={90} tint="light" style={styles.overlay} />
+        </TouchableWithoutFeedback>
+    </Modal>
+);
 
 
 const DailyRouteVehiclesComplete: React.FC = () => {
     const [routes, setRoutes] = useState<DailyRoute[]>([]);
     const [loading, setLoading] = useState(false);
+    const [selectedRoute, setSelectedRoute] = useState<DailyRoute | null>(null);
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
 
-    const { apiCaller, driverId } = useGlobalContext();
+    const { apiCaller, driverId, setPhotos } = useGlobalContext();
 
     useEffect(() => {
         fetchRoutes();
@@ -33,12 +71,26 @@ const DailyRouteVehiclesComplete: React.FC = () => {
             const response = await apiCaller.get(`/api/dailyRoute/driver/${driverId}`);
             const filteredRoutes = response.data.data.filter((route: DailyRoute) => route.status === "COMPLETED");
             setRoutes(filteredRoutes);
+            console.log(filteredRoutes);
         } catch (error) {
             console.error("Error fetching routes:", error);
             Alert.alert("Error", "Failed to fetch routes. Please try again.");
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleShowDetails = (pkg: DailyRoute) => {
+        setSelectedRoute(pkg);
+        setShowDetailsModal(true);
+    };
+
+    const filterDailyRoutes = (routes: DailyRoute[], query: string) => {
+        return routes.filter((route) =>
+            Object.values(route).some((value) =>
+                String(value).toLowerCase().includes(query.toLowerCase())
+            )
+        );
     };
 
     return (
@@ -54,17 +106,17 @@ const DailyRouteVehiclesComplete: React.FC = () => {
 
             {loading ? (
                 <ActivityIndicator size="large" color={Colors.darkBlue} />
-            ) : (                
-            <ScrollView style={styles.routesList}>
-                {routes.map((route, index) => (
-                    <View key={index} style={styles.card}>
-                        <View style={styles.cardHeader}>
-                            <TouchableOpacity style={styles.photosButton} onPress={() => router.push('all_photos')}>
-                                <Text style={styles.photosButtonText}>Photos</Text>
-                            </TouchableOpacity>
-                        </View>
+            ) : (
+                <ScrollView style={styles.routesList}>
+                    {routes.map((route, index) => (
+                        <View key={index} style={styles.card}>
+                            <View style={styles.cardHeader}>
+                                <TouchableOpacity onPress={() => handleShowDetails(route)} style={styles.detailsButton}>
+                                    <Text style={styles.detailsButtonText}>Details</Text>
+                                </TouchableOpacity>
+                            </View>
 
-                        <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between" }} >
+                            <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between" }} >
                                 <Text style={{ fontWeight: "600", fontSize: 14 }} >Departure</Text>
                                 <Text style={{ fontWeight: "600", fontSize: 14 }} >Destination</Text>
                             </View>
@@ -75,26 +127,61 @@ const DailyRouteVehiclesComplete: React.FC = () => {
                             </View>
 
                             <Text style={styles.cardText}>
-                                Vehicle Number: <Text style={{ color: "black" }}>{route.vehicleNumber}</Text>
+                                Vehicle Number: <Text style={{ color: "black" }}>{route.vehicle.number}</Text>
                             </Text>
                             <Text style={styles.cardText}>
-                                Departure Time: <Text style={{ color: "black" }}>{route.departureTime}</Text>
+                                Departure Time: <Text style={{ color: "black" }}>{timestampToTime(route.departureTime)}</Text>
                             </Text>
                             <Text style={styles.cardText}>
-                                Cleaner Name: <Text style={{ color: "black" }}>{route.cleaner ? route.cleaner.name : "N/A"}</Text>
+                                Cleaner Name: <Text style={{ color: "black" }}>{route.cleaner ? route.cleaner.name : ""}</Text>
                             </Text>
                             <Text style={styles.cardText}>
-                                Primary Driver : <Text style={{ color: "black" }}>{route.primaryDriver ? route.primaryDriver.name : "N/A"}</Text>
+                                Primary Driver : <Text style={{ color: "black" }}>{route.primaryDriver ? route.primaryDriver.name : ""}</Text>
                             </Text>
                             <Text style={styles.cardText}>
-                                Secondary Driver: <Text style={{ color: "black" }}>{route.secondaryDriver ? route.secondaryDriver.name : "N/A"}</Text>
+                                Secondary Driver: <Text style={{ color: "black" }}>{route.secondaryDriver ? route.secondaryDriver.name : ""}</Text>
                             </Text>
 
-                    </View>
-                ))}
-            </ScrollView>
+                        </View>
+                    ))}
+                </ScrollView>
             )}
             <FloatingButton />
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={showDetailsModal}
+                onRequestClose={() => setShowDetailsModal(false)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Journey Details</Text>
+                        <Text style={styles.modalText}>Before Journey Notes: {selectedRoute?.beforeJourneyNote || ''}</Text>
+                        <Text style={styles.modalText}>After Journey Notes: {selectedRoute?.afterJourneyNote || ''}</Text>
+                        <View style={styles.modalButtons}>
+                            <TouchableOpacity
+                                style={[styles.modalButton, { backgroundColor: Colors.darkBlue }]}
+                                onPress={() => {setShowDetailsModal(false); setPhotos(selectedRoute.beforeJourneyPhotos); router.push('before_photos') }}
+                            >
+                                <Text style={[styles.modalButtonText, { color: "#fff" }]}>Before Journey Photos</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={[styles.modalButton, { backgroundColor: Colors.darkBlue }]}
+                                onPress={() => {setShowDetailsModal(false); setPhotos(selectedRoute.afterJourneyPhotos); router.push('after_photos') }}
+                            >
+                                <Text style={[styles.modalButtonText, { color: "#fff" }]}>After Journey Photos</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <TouchableOpacity
+                            style={[styles.modalButton, { backgroundColor: "#ccc", marginTop: 10 }]}
+                            onPress={() => setShowDetailsModal(false)}
+                        >
+                            <Text style={styles.modalButtonText}>Close</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </SafeAreaView>
     );
 };
@@ -104,6 +191,19 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         backgroundColor: "#ffffff",
+    },
+    detailsButtonText: {
+        color: "#fff",
+        fontWeight: "semibold",
+        fontSize: 10,
+    },
+    detailsButton: {
+        backgroundColor: Colors.darkBlue,
+        paddingHorizontal: 10,
+        borderRadius: 5,
+        paddingVertical: 5,
+        height: 25,
+        marginRight: 5,
     },
     searchContainer: {
         flexDirection: "row",
@@ -156,6 +256,79 @@ const styles = StyleSheet.create({
         color: Colors.secondary,
         fontWeight: "500",
         fontSize: 13,
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22,
+    },
+    modalContent: {
+        width: 300,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: "center",
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 15,
+    },
+    modalButtons: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        width: "100%",
+    },
+    modalButton: {
+        borderRadius: 10,
+        padding: 10,
+        elevation: 2,
+        marginHorizontal: 5,
+        width: 100,
+        alignItems: "center",
+    },
+    modalButtonText: {
+        color: "white",
+        fontWeight: "bold",
+    },
+    overlay: {
+        flex: 1,
+    },
+    inputGroup: {
+        marginBottom: 15,
+        width: "100%"
+    },
+    label: {
+        fontSize: 16,
+        marginBottom: 5,
+    },
+    picker: {
+        width: "100%",
+        height: 50,
+        borderWidth: 1,
+        borderColor: Colors.secondary,
+        borderRadius: 5,
+    },
+    input: {
+        borderColor: Colors.secondary,
+        borderWidth: 1,
+        borderRadius: 10,
+        paddingHorizontal: 10,
+        height: 40,
+        justifyContent: 'center'
     },
 });
 

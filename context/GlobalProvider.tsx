@@ -21,6 +21,8 @@ interface GlobalContextProps {
   editData: any,
   setDriverId: React.Dispatch<React.SetStateAction<string | null>>;
   driverId: string | null;
+  photos: Array<string>
+  setPhotos: React.Dispatch<React.SetStateAction<Array<string>>>
 }
 
 const GlobalContext = createContext<GlobalContextProps | undefined>(undefined);
@@ -44,6 +46,7 @@ const GlobalProvider: React.FC<GlobalProviderProps> = ({ children }) => {
   const [userName, setUserName] = useState<string | null>(null);
   const [editData, setEditData] = useState<any>()
   const [driverId, setDriverId] = useState<string | null>(null);
+  const [photos, setPhotos] = useState<Array<string>>([])
 
   const baseURL = process.env.EXPO_PUBLIC_URL as string;
 
@@ -101,7 +104,9 @@ const GlobalProvider: React.FC<GlobalProviderProps> = ({ children }) => {
         setEditData,
         editData,
         driverId,
-        setDriverId
+        setDriverId,
+        photos,
+        setPhotos
       }}
     >
       {children}

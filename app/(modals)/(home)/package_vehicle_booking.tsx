@@ -227,7 +227,7 @@ const PackageVehicleListScreen = () => {
               {pkg.vehicle &&
                 <Text style={styles.cardText}>Vehicle Number: <Text style={styles.textValue}>{pkg.vehicle.number}</Text></Text>
               }
-              <Text style={styles.cardText}>Other Vehicle: <Text style={styles.textValue}>{pkg.otherVehicle}</Text></Text>
+              <Text style={styles.cardText}>Other Vehicle: <Text style={styles.textValue}>{pkg.otherVehicle.number}</Text></Text>
 
               <TouchableOpacity
                 style={styles.viewMoreButton}

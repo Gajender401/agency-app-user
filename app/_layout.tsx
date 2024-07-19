@@ -28,6 +28,8 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="(tabs)/index" options={{ headerShown: false }} />
         <Stack.Screen name="(modals)/login" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)/(home)/before_photos" options={{ headerShadowVisible:false, headerTitle:"Before Journey Photos", headerTitleAlign:"center" }} />
+        <Stack.Screen name="(modals)/(home)/after_photos" options={{ headerShadowVisible:false, headerTitle:"After Journey Photos", headerTitleAlign:"center" }} />
 
         <Stack.Screen name="(modals)/(home)/package_vehicle_booking" options={{ headerShadowVisible: false, headerTitle: "Package Vehicle booking", headerTitleAlign: "center" }} />
         <Stack.Screen name="(modals)/(home)/package_vehicle_booking_more/[pkgId]" options={{ headerShadowVisible: false, headerTitle: "Package Vehicle booking", headerTitleAlign: "center" }} />

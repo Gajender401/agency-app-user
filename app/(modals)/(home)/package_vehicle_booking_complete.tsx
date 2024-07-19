@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   ScrollView,
   ActivityIndicator,
+  Modal,
 } from "react-native";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -30,7 +31,9 @@ function formatDate(dateString: string): string {
 const PackageVehicleListScreen = () => {
   const [packages, setPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState(false);
-  const { apiCaller, driverId } = useGlobalContext();
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
+  const { apiCaller, driverId, setPhotos } = useGlobalContext();
 
   const fetchPackages = async () => {
     try {
@@ -100,6 +103,42 @@ const PackageVehicleListScreen = () => {
           ))}
         </ScrollView>
       )}
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showDetailsModal}
+        onRequestClose={() => setShowDetailsModal(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Journey Details</Text>
+            <Text style={styles.modalText}>Before Journey Notes: {selectedPackage?.beforeJourneyNote || ''}</Text>
+            <Text style={styles.modalText}>After Journey Notes: {selectedPackage?.afterJourneyNote || ''}</Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, { backgroundColor: Colors.darkBlue }]}
+                onPress={() => { setPhotos(selectedPackage?.beforeJourneyPhotos); router.push('before_photos') }}
+              >
+                <Text style={[styles.modalButtonText, { color: "#fff" }]}>Before Journey Photos</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, { backgroundColor: Colors.darkBlue }]}
+                onPress={() => { setPhotos(selectedPackage?.afterJourneyPhotos); router.push('after_photos') }}
+              >
+                <Text style={[styles.modalButtonText, { color: "#fff" }]}>After Journey Photos</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              style={[styles.modalButton, { backgroundColor: "#ccc", marginTop: 10 }]}
+              onPress={() => setShowDetailsModal(false)}
+            >
+              <Text style={styles.modalButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       <FloatingButton />
     </SafeAreaView>
   );
@@ -190,6 +229,76 @@ const styles = StyleSheet.create({
   },
   textValue: {
     color: "black",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalContent: {
+    width: 300,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  modalButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  modalButton: {
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2,
+    marginHorizontal: 5,
+    width: 100,
+    alignItems: "center",
+  },
+  modalButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  filterContainer: {
+    marginBottom: 10,
+    marginTop: -10
+  },
+  filterPicker: {
+    height: 40,
+    width: '100%',
+    borderRadius: 5,
+    marginBottom: 10
+  },
+  detailsButton: {
+    backgroundColor: Colors.secondary,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    paddingVertical: 5,
+    height: 25,
+    marginRight: 5,
+  },
+  detailsButtonText: {
+    color: "#fff",
+    fontWeight: "semibold",
+    fontSize: 10,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
   },
 });
 
