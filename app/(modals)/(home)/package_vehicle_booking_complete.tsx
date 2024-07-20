@@ -51,6 +51,11 @@ const PackageVehicleListScreen = () => {
     fetchPackages();
   }, []);
 
+  const handleShowDetails = (pkg: Package) => {
+    setSelectedPackage(pkg);
+    setShowDetailsModal(true);
+};
+
   return (
     <SafeAreaView style={styles.container}>
 
@@ -71,8 +76,8 @@ const PackageVehicleListScreen = () => {
           {packages.map((pkg, index) => (
             <View key={index} style={styles.card}>
               <View style={styles.cardHeader}>
-                <TouchableOpacity style={styles.photosButton} onPress={() => router.push("all_photos")}>
-                  <Text style={styles.photosButtonText}>Photos</Text>
+                <TouchableOpacity onPress={() => handleShowDetails(pkg)} style={styles.detailsButton}>
+                  <Text style={styles.detailsButtonText}>Details</Text>
                 </TouchableOpacity>
               </View>
 
@@ -91,7 +96,7 @@ const PackageVehicleListScreen = () => {
               {pkg.vehicle &&
                 <Text style={styles.cardText}>Vehicle Number: <Text style={styles.textValue}>{pkg.vehicle.number}</Text></Text>
               }
-              <Text style={styles.cardText}>Other Vehicle: <Text style={styles.textValue}>{pkg.otherVehicle}</Text></Text>
+              <Text style={styles.cardText}>Other Vehicle: <Text style={styles.textValue}>{pkg.otherVehicle.number}</Text></Text>
 
               <TouchableOpacity
                 style={styles.viewMoreButton}
@@ -118,13 +123,13 @@ const PackageVehicleListScreen = () => {
             <View style={styles.modalButtons}>
               <TouchableOpacity
                 style={[styles.modalButton, { backgroundColor: Colors.darkBlue }]}
-                onPress={() => { setPhotos(selectedPackage?.beforeJourneyPhotos); router.push('before_photos') }}
+                onPress={() => {setShowDetailsModal(false); setPhotos(selectedPackage?.beforeJourneyPhotos); router.push('before_photos') }}
               >
                 <Text style={[styles.modalButtonText, { color: "#fff" }]}>Before Journey Photos</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalButton, { backgroundColor: Colors.darkBlue }]}
-                onPress={() => { setPhotos(selectedPackage?.afterJourneyPhotos); router.push('after_photos') }}
+                onPress={() => {setShowDetailsModal(false); setPhotos(selectedPackage?.afterJourneyPhotos); router.push('after_photos') }}
               >
                 <Text style={[styles.modalButtonText, { color: "#fff" }]}>After Journey Photos</Text>
               </TouchableOpacity>
@@ -283,7 +288,7 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   detailsButton: {
-    backgroundColor: Colors.secondary,
+    backgroundColor: Colors.darkBlue,
     paddingHorizontal: 10,
     borderRadius: 5,
     paddingVertical: 5,

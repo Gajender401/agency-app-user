@@ -16,8 +16,6 @@ import { Colors } from "@/constants/Colors";
 import { router } from "expo-router";
 import FloatingButton from "@/components/FloatingButton";
 import { useGlobalContext } from "@/context/GlobalProvider";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
-import { BlurView } from "expo-blur";
 
 function timestampToTime(timestamp: string): string {
     const date = new Date(timestamp);
@@ -32,25 +30,6 @@ function timestampToTime(timestamp: string): string {
 
     return `${formattedHours}:${minutes}:${seconds} ${ampm}`;
 }
-
-
-interface BlurOverlayProps {
-    visible: boolean;
-    onRequestClose: () => void;
-}
-
-const BlurOverlay: React.FC<BlurOverlayProps> = ({ visible, onRequestClose }) => (
-    <Modal
-        animationType="fade"
-        transparent={true}
-        visible={visible}
-        onRequestClose={onRequestClose}
-    >
-        <TouchableWithoutFeedback onPress={onRequestClose}>
-            <BlurView intensity={90} tint="light" style={styles.overlay} />
-        </TouchableWithoutFeedback>
-    </Modal>
-);
 
 
 const DailyRouteVehiclesComplete: React.FC = () => {
@@ -85,13 +64,6 @@ const DailyRouteVehiclesComplete: React.FC = () => {
         setShowDetailsModal(true);
     };
 
-    const filterDailyRoutes = (routes: DailyRoute[], query: string) => {
-        return routes.filter((route) =>
-            Object.values(route).some((value) =>
-                String(value).toLowerCase().includes(query.toLowerCase())
-            )
-        );
-    };
 
     return (
         <SafeAreaView style={styles.container}>

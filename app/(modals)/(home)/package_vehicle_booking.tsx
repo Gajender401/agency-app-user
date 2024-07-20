@@ -119,7 +119,7 @@ const PackageVehicleListScreen = () => {
 
     try {
       setLoading(true);
-      await apiCaller.patch(`/api/packageBooking/finalize?bookingId=${selectedPackage._id}`, tripData);
+      await apiCaller.patch(`/api/packageBooking/complete?bookingId=${selectedPackage._id}`, tripData);
       Alert.alert("Success", "Trip ended successfully!");
       setShowEndTripModal(false);
       fetchPackages();
