@@ -30,6 +30,10 @@ function timestampToTime(timestamp: string): string {
 
     return `${formattedHours}:${minutes}:${seconds} ${ampm}`;
 }
+const timestampToDate = (timestamp: string) => {
+    const date = new Date(timestamp);
+    return new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
+};
 
 
 const DailyRouteVehiclesComplete: React.FC = () => {
@@ -103,6 +107,9 @@ const DailyRouteVehiclesComplete: React.FC = () => {
                             </Text>
                             <Text style={styles.cardText}>
                                 Departure Time: <Text style={{ color: "black" }}>{timestampToTime(route.departureTime)}</Text>
+                            </Text>
+                            <Text style={styles.cardText}>
+                                Departure Date: <Text style={{ color: "black" }}>{timestampToDate(route.departureTime)}</Text>
                             </Text>
                             <Text style={styles.cardText}>
                                 Cleaner Name: <Text style={{ color: "black" }}>{route.cleaner ? route.cleaner.name : ""}</Text>

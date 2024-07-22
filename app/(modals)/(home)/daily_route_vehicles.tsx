@@ -86,6 +86,10 @@ const DailyRouteVehicles: React.FC = () => {
             setLoading(false);
         }
     };
+    const timestampToDate = (timestamp: string) => {
+        const date = new Date(timestamp);
+        return new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
+    };
 
     const handleDelete = async () => {
         if (!selectedRoute) return;
@@ -237,6 +241,9 @@ const DailyRouteVehicles: React.FC = () => {
                                 Departure Time: <Text style={{ color: "black" }}>{timestampToTime(route.departureTime)}</Text>
                             </Text>
                             <Text style={styles.cardText}>
+                                Departure Date: <Text style={{ color: "black" }}>{timestampToDate(route.departureTime)}</Text>
+                            </Text>
+                            <Text style={styles.cardText}>
                                 Cleaner Name: <Text style={{ color: "black" }}>{route.cleaner ? route.cleaner.name : "N/A"}</Text>
                             </Text>
                             <Text style={styles.cardText}>
@@ -296,6 +303,7 @@ const DailyRouteVehicles: React.FC = () => {
                                         style={styles.input}
                                         value={beforeJourneyNote}
                                         onChangeText={(text) => setBeforeJourneyNote(text)}
+                                        multiline={true}
                                     />
                                 </View>
                                 <View style={styles.inputGroup}>
@@ -495,6 +503,10 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
         color: Colors.secondary,
+        height: 100, // or any desired height
+        // width: '100%',
+        textAlignVertical: 'top', // Ensures the cursor starts from the top in multiline
+        textAlign: 'left',
     },
     photoButton: {
         backgroundColor: Colors.darkBlue,

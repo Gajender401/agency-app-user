@@ -10,9 +10,12 @@ import * as SecureStore from "expo-secure-store";
 import { useEffect } from 'react';
 
 const carouselImages = [
-  'https://imgd.aeplcdn.com/664x374/n/cw/ec/107719/range-rover-exterior-right-front-three-quarter-46.jpeg?isig=0&q=80',
-  'https://imgd.aeplcdn.com/664x374/n/cw/ec/107719/range-rover-exterior-right-front-three-quarter-23.jpeg?isig=0&q=80',
-  'https://imgd.aeplcdn.com/664x374/n/cw/ec/107719/new-range-rover-exterior-right-side-view.jpeg?isig=0&q=80'
+  require('@/assets/images/carousel1.png'),
+  require('@/assets/images/carousel2.png'),
+  require('@/assets/images/carousel3.png'),
+  require('@/assets/images/carousel4.png'),
+  require('@/assets/images/carousel5.png'),
+  require('@/assets/images/carousel6.png')
 ];
 
 const { width: deviceWidth } = Dimensions.get('window');
@@ -93,19 +96,18 @@ export default function HomeScreen() {
           </View>
         </View>
         <View style={styles.carouselContainer}>
-          <Carousel
+        <Carousel
             width={deviceWidth * 0.9}
-            height={deviceWidth * 0.6}
+            height={deviceWidth * 0.5}
             autoPlay
-            mode='parallax'
             data={carouselImages}
             renderItem={({ item }) => (
-              <Image source={{ uri: item }} style={styles.carouselImage} />
+              <Image source={item} style={styles.carouselImage} />
             )}
           />
         </View>
       </ScrollView>
-      <FloatingButton />
+      {/* <FloatingButton /> */}
     </GestureHandlerRootView>
   );
 }
@@ -153,8 +155,9 @@ const styles = StyleSheet.create({
     marginBottom: 50
   },
   carouselImage: {
-    height: deviceWidth * 0.6,
+    height: deviceWidth * 0.5,
     borderRadius: 10,
+    width: deviceWidth * 0.9,
   },
   dividerContainer: {
     marginHorizontal: 20,

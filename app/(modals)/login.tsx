@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import {
     View,
     Text,
@@ -24,6 +24,15 @@ const LoginScreen = () => {
     const [rememberMe, setRememberMe] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const {setToken, setIsLogged} = useGlobalContext()
+    const [notificationVisible, setNotificationVisible] = useState(true);
+     
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setNotificationVisible(false);
+        }, 10000);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     const handleNext = async () => {
         setIsLoading(true);
@@ -44,17 +53,29 @@ const LoginScreen = () => {
         } finally {
             setIsLoading(false);
         }
+
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 2000);
     };
 
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="dark-content" />
             <Image style={styles.wave_image} source={require('@/assets/images/wave.png')} />
-
+               
+            {notificationVisible && (
+                <View style={styles.notificationContainer}>
+                    <Text style={styles.notificationText}>
+                        Here you have to enter the ID and password given by the travel agency whose trips you want to view.
+                    </Text>
+                </View>
+            )}
             <View style={{ marginTop: 150 }} >
                 <Text style={styles.welcomeText}>Welcome</Text>
                 <Text style={styles.welcomeText}>Back</Text>
             </View>
+         
 
             <View style={styles.innerContainer} >
                 <View style={styles.inputContainer}>
@@ -107,6 +128,18 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         marginTop: StatusBar.currentHeight,
         padding: 20,
+    },
+    notificationContainer: {
+        marginVertical: 20,
+        paddingHorizontal: 20,
+        backgroundColor: '#51BEEE',
+        borderRadius: 5,
+        padding: 10,
+    },
+    notificationText: {
+        color: '#ffffff',
+        fontSize: 16,
+        textAlign: 'center',
     },
     innerContainer: {
         justifyContent: "space-around",
