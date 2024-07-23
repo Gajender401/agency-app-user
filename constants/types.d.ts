@@ -59,3 +59,23 @@ interface Package {
   updatedAt: string;
   status: "STARTED" | "COMPLETED"
 }
+
+interface Vehicle {
+  _id: string;
+  number: string;
+  seatingCapacity: number;
+  model: string;
+  bodyType: string;
+  chassisBrand: string;
+  location: string;
+  contactNumber: string;
+  photos: string[];
+  isAC: boolean;
+  isForRent: boolean;
+  isForSell: boolean;
+  type: string;
+  noOfTyres: number;
+  vehicleWeightInKGS: number;
+  chassisNumber: string;
+  forRentOrSell: string;
+}

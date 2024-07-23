@@ -62,6 +62,7 @@ const PackageVehicleListScreen = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const { apiCaller, driverId } = useGlobalContext();
+  const [inputHeight, setInputHeight] = useState(50);
 
   const fetchPackages = async () => {
     try {
@@ -282,9 +283,13 @@ const PackageVehicleListScreen = () => {
                 <View style={styles.inputGroup}>
                   <Text style={styles.label}>Before Journey Note</Text>
                   <TextInput
-                    style={styles.input}
                     value={beforeJourneyNote}
+                    style={[styles.input, styles.textarea, { height: Math.max(50, inputHeight) }]}
                     onChangeText={(text) => setBeforeJourneyNote(text)}
+                    multiline={true}
+                    onContentSizeChange={(event) => {
+                      setInputHeight(event.nativeEvent.contentSize.height);
+                    }}
                   />
                 </View>
                 <View style={styles.inputGroup}>
@@ -337,9 +342,13 @@ const PackageVehicleListScreen = () => {
                 <View style={styles.inputGroup}>
                   <Text style={styles.label}>After Journey Note</Text>
                   <TextInput
-                    style={styles.input}
+                    style={[styles.input, styles.textarea, { height: Math.max(50, inputHeight) }]}
                     value={afterJourneyNote}
                     onChangeText={(text) => setAfterJourneyNote(text)}
+                    multiline={true}
+                    onContentSizeChange={(event) => {
+                      setInputHeight(event.nativeEvent.contentSize.height);
+                    }}
                   />
                 </View>
                 <View style={styles.inputGroup}>
@@ -405,6 +414,12 @@ const styles = StyleSheet.create({
   },
   packagesList: {
     flex: 1,
+  },
+  textarea: {
+    minHeight: 50,
+    maxHeight: 300,
+    textAlignVertical: 'top',
+    paddingTop: 10,
   },
   card: {
     backgroundColor: "#fff",

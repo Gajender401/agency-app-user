@@ -47,13 +47,13 @@ function timestampToTime(timestamp: string): string {
     const minutes = date.getUTCMinutes().toString().padStart(2, '0');
     const seconds = date.getUTCSeconds().toString().padStart(2, '0');
     const ampm = hours >= 12 ? 'PM' : 'AM';
-  
+
     hours = hours % 12;
     hours = hours ? hours : 12;
     const formattedHours = hours.toString().padStart(2, '0');
-  
+
     return `${formattedHours}:${minutes}:${seconds} ${ampm}`;
-  }
+}
 
 const DailyRouteVehicles: React.FC = () => {
     const [routes, setRoutes] = useState<DailyRoute[]>([]);
@@ -66,6 +66,7 @@ const DailyRouteVehicles: React.FC = () => {
     const [afterJourneyPhotos, setAfterJourneyPhotos] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
     const [selectedRoute, setSelectedRoute] = useState<DailyRoute | null>(null);
+    const [inputHeight, setInputHeight] = useState(50);
 
     const { apiCaller, driverId } = useGlobalContext();
 
@@ -300,10 +301,13 @@ const DailyRouteVehicles: React.FC = () => {
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.label}>Before Journey Note</Text>
                                     <TextInput
-                                        style={styles.input}
+                                        style={[styles.input, styles.textarea, { height: Math.max(50, inputHeight) }]}
                                         value={beforeJourneyNote}
                                         onChangeText={(text) => setBeforeJourneyNote(text)}
                                         multiline={true}
+                                        onContentSizeChange={(event) => {
+                                            setInputHeight(event.nativeEvent.contentSize.height);
+                                        }}
                                     />
                                 </View>
                                 <View style={styles.inputGroup}>
@@ -356,9 +360,13 @@ const DailyRouteVehicles: React.FC = () => {
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.label}>After Journey Note</Text>
                                     <TextInput
-                                        style={styles.input}
+                                        style={[styles.input, styles.textarea, { height: Math.max(50, inputHeight) }]}
                                         value={afterJourneyNote}
                                         onChangeText={(text) => setAfterJourneyNote(text)}
+                                        multiline={true}
+                                        onContentSizeChange={(event) => {
+                                            setInputHeight(event.nativeEvent.contentSize.height);
+                                        }}
                                     />
                                 </View>
                                 <View style={styles.inputGroup}>
@@ -503,10 +511,15 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
         color: Colors.secondary,
-        height: 100, // or any desired height
-        // width: '100%',
-        textAlignVertical: 'top', // Ensures the cursor starts from the top in multiline
+        height: 100,
+        textAlignVertical: 'top',
         textAlign: 'left',
+    },
+    textarea: {
+        minHeight: 50,
+        maxHeight: 300,
+        textAlignVertical: 'top',
+        paddingTop: 10,
     },
     photoButton: {
         backgroundColor: Colors.darkBlue,
