@@ -106,7 +106,7 @@ const DailyRouteVehiclesComplete: React.FC = () => {
                                 Vehicle Number: <Text style={{ color: "black" }}>{route.vehicle.number}</Text>
                             </Text>
                             <Text style={styles.cardText}>
-                                Departure Time: <Text style={{ color: "black" }}>{timestampToTime(route.departureTime)}</Text>
+                                Departure Time: <Text style={{ color: "black" }}>{route.departureTime ? new Date(route.departureTime).toLocaleTimeString() : ""}</Text>
                             </Text>
                             <Text style={styles.cardText}>
                                 Departure Date: <Text style={{ color: "black" }}>{timestampToDate(route.departureTime)}</Text>
@@ -141,13 +141,13 @@ const DailyRouteVehiclesComplete: React.FC = () => {
                         <View style={styles.modalButtons}>
                             <TouchableOpacity
                                 style={[styles.modalButton, { backgroundColor: Colors.darkBlue }]}
-                                onPress={() => {setShowDetailsModal(false); setPhotos(selectedRoute.beforeJourneyPhotos); router.push('before_photos') }}
+                                onPress={() => { setShowDetailsModal(false); setPhotos(selectedRoute.beforeJourneyPhotos); router.push('before_photos') }}
                             >
                                 <Text style={[styles.modalButtonText, { color: "#fff" }]}>Before Journey Photos</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={[styles.modalButton, { backgroundColor: Colors.darkBlue }]}
-                                onPress={() => {setShowDetailsModal(false); setPhotos(selectedRoute.afterJourneyPhotos); router.push('after_photos') }}
+                                onPress={() => { setShowDetailsModal(false); setPhotos(selectedRoute.afterJourneyPhotos); router.push('after_photos') }}
                             >
                                 <Text style={[styles.modalButtonText, { color: "#fff" }]}>After Journey Photos</Text>
                             </TouchableOpacity>
