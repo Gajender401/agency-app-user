@@ -30,17 +30,19 @@ function timestampToTime(timestamp: string): string {
 
     return `${formattedHours}:${minutes}:${seconds} ${ampm}`;
 }
+
 const timestampToDate = (timestamp: string) => {
     const date = new Date(timestamp);
     return new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
 };
-
 
 const DailyRouteVehiclesComplete: React.FC = () => {
     const [routes, setRoutes] = useState<DailyRoute[]>([]);
     const [loading, setLoading] = useState(false);
     const [selectedRoute, setSelectedRoute] = useState<DailyRoute | null>(null);
     const [showDetailsModal, setShowDetailsModal] = useState(false);
+    const [showFullBeforeNote, setShowFullBeforeNote] = useState(false);
+    const [showFullAfterNote, setShowFullAfterNote] = useState(false);
 
     const { apiCaller, driverId, setPhotos } = useGlobalContext();
 
@@ -54,7 +56,6 @@ const DailyRouteVehiclesComplete: React.FC = () => {
             const response = await apiCaller.get(`/api/dailyRoute/driver/${driverId}`);
             const filteredRoutes = response.data.data.filter((route: DailyRoute) => route.status === "COMPLETED");
             setRoutes(filteredRoutes);
-            console.log(filteredRoutes);
         } catch (error) {
             console.error("Error fetching routes:", error);
             Alert.alert("Error", "Failed to fetch routes. Please try again.");
@@ -63,11 +64,41 @@ const DailyRouteVehiclesComplete: React.FC = () => {
         }
     };
 
-    const handleShowDetails = (pkg: DailyRoute) => {
-        setSelectedRoute(pkg);
+    const handleShowDetails = (route: DailyRoute) => {
+        setSelectedRoute(route);
         setShowDetailsModal(true);
+        setShowFullBeforeNote(false);
+        setShowFullAfterNote(false);
     };
 
+    const renderNote = (note: string, isFullNote: boolean, setFullNote: React.Dispatch<React.SetStateAction<boolean>>) => {
+        const maxLength = 100;
+        if (!note || note.length <= maxLength) {
+            return <Text style={styles.modalNoteText}>{note || 'No notes available'}</Text>;
+        }
+
+        if (isFullNote) {
+            return (
+                <View>
+                    <Text style={styles.modalNoteText}>{note}</Text>
+                    <TouchableOpacity onPress={() => setFullNote(false)}>
+                        <Text style={styles.readMoreLess}>Show Less</Text>
+                    </TouchableOpacity>
+                </View>
+            );
+        }
+
+        return (
+            <View>
+                <Text style={styles.modalNoteText}>
+                    {`${note.substring(0, maxLength)}...`}
+                </Text>
+                <TouchableOpacity onPress={() => setFullNote(true)}>
+                    <Text style={styles.readMoreLess}>Read More</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -120,7 +151,6 @@ const DailyRouteVehiclesComplete: React.FC = () => {
                             <Text style={styles.cardText}>
                                 Secondary Driver: <Text style={{ color: "black" }}>{route.secondaryDriver ? route.secondaryDriver.name : ""}</Text>
                             </Text>
-
                         </View>
                     ))}
                 </ScrollView>
@@ -136,8 +166,10 @@ const DailyRouteVehiclesComplete: React.FC = () => {
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                         <Text style={styles.modalTitle}>Journey Details</Text>
-                        <Text style={styles.modalText}>Before Journey Notes: {selectedRoute?.beforeJourneyNote || ''}</Text>
-                        <Text style={styles.modalText}>After Journey Notes: {selectedRoute?.afterJourneyNote || ''}</Text>
+                        <Text style={styles.modalText}>Before Journey Notes:</Text>
+                        {renderNote(selectedRoute?.beforeJourneyNote || '', showFullBeforeNote, setShowFullBeforeNote)}
+                        <Text style={styles.modalText}>After Journey Notes:</Text>
+                        {renderNote(selectedRoute?.afterJourneyNote || '', showFullAfterNote, setShowFullAfterNote)}
                         <View style={styles.modalButtons}>
                             <TouchableOpacity
                                 style={[styles.modalButton, { backgroundColor: Colors.darkBlue }]}
@@ -219,17 +251,6 @@ const styles = StyleSheet.create({
         justifyContent: "flex-end",
         marginBottom: 10,
     },
-    photosButton: {
-        backgroundColor: Colors.darkBlue,
-        paddingHorizontal: 10,
-        borderRadius: 5,
-        paddingVertical: 5,
-    },
-    photosButtonText: {
-        color: "#fff",
-        fontWeight: "bold",
-        fontSize: 12,
-    },
     cardText: {
         marginBottom: 8,
         color: Colors.secondary,
@@ -258,8 +279,15 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     modalText: {
+        marginBottom: 5,
+        textAlign: "left",
+        fontWeight: "bold",
+        alignSelf: "flex-start",
+    },
+    modalNoteText: {
         marginBottom: 15,
-        textAlign: "center",
+        textAlign: "left",
+        alignSelf: "flex-start",
     },
     modalTitle: {
         fontSize: 18,
@@ -283,31 +311,10 @@ const styles = StyleSheet.create({
         color: "white",
         fontWeight: "bold",
     },
-    overlay: {
-        flex: 1,
-    },
-    inputGroup: {
-        marginBottom: 15,
-        width: "100%"
-    },
-    label: {
-        fontSize: 16,
-        marginBottom: 5,
-    },
-    picker: {
-        width: "100%",
-        height: 50,
-        borderWidth: 1,
-        borderColor: Colors.secondary,
-        borderRadius: 5,
-    },
-    input: {
-        borderColor: Colors.secondary,
-        borderWidth: 1,
-        borderRadius: 10,
-        paddingHorizontal: 10,
-        height: 40,
-        justifyContent: 'center'
+    readMoreLess: {
+        color: Colors.darkBlue,
+        fontWeight: "bold",
+        marginBottom: 10,
     },
 });
 

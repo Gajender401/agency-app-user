@@ -19,7 +19,6 @@ const VehicleDetailsScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const { apiCaller } = useGlobalContext();
 
-  
   useEffect(() => {
     const fetchPackageDetails = async () => {
       try {
@@ -46,16 +45,6 @@ const VehicleDetailsScreen: React.FC = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.section}>
-        <Text style={styles.label}>Vehicle Number:</Text>
-        {/*@ts-ignore*/}
-        <Text style={styles.value}>{vehicleDetails.vehicle.number}</Text>
-      </View>
-      <View style={styles.section}>
-        <Text style={styles.label}>Other Vehicle Number:</Text>
-        {/*@ts-ignore*/}
-        <Text style={styles.value}>{vehicleDetails.otherVehicle.number}</Text>
-      </View>
-      <View style={styles.section}>
         <Text style={styles.label}>Customer Name:</Text>
         <Text style={styles.value}>{vehicleDetails.customerName}</Text>
       </View>
@@ -66,22 +55,6 @@ const VehicleDetailsScreen: React.FC = () => {
       <View style={styles.section}>
         <Text style={styles.label}>Alternate Number/ WhatsApp Number:</Text>
         <Text style={styles.value}>{vehicleDetails.alternateNumber}</Text>
-      </View>
-      <View style={styles.section}>
-        <Text style={styles.label}>Km Starting:</Text>
-        <Text style={styles.value}>{vehicleDetails.kmStarting}</Text>
-      </View>
-      <View style={styles.section}>
-        <Text style={styles.label}>Per Km Rate:</Text>
-        <Text style={styles.value}>{vehicleDetails.perKmRateInINR}</Text>
-      </View>
-      <View style={styles.section}>
-        <Text style={styles.label}>Advanced Amount:</Text>
-        <Text style={styles.value}>{vehicleDetails.advanceAmountInINR}</Text>
-      </View>
-      <View style={styles.section}>
-        <Text style={styles.label}>Remaining Amount:</Text>
-        <Text style={styles.value}>{vehicleDetails.remainingAmountInINR}</Text>
       </View>
       <View style={styles.section}>
         <Text style={styles.label}>Departure Place:</Text>
@@ -108,16 +81,12 @@ const VehicleDetailsScreen: React.FC = () => {
         <Text style={styles.value}>{vehicleDetails.returnTime ? new Date(vehicleDetails.returnTime).toLocaleTimeString() : ""}</Text>
       </View>
       <View style={styles.section}>
-        <Text style={styles.label}>Toll:</Text>
-        <Text style={styles.value}>{vehicleDetails.tollInINR}</Text>
-      </View>
-      <View style={styles.section}>
-        <Text style={styles.label}>Other State Tax:</Text>
-        <Text style={styles.value}>{vehicleDetails.otherStateTaxInINR}</Text>
-      </View>
-      <View style={styles.section}>
-        <Text style={styles.label}>Add Note:</Text>
+        <Text style={styles.label}>Instruction:</Text>
         <Text style={styles.value}>{vehicleDetails.instructions}</Text>
+      </View>
+      <View style={styles.section}>
+        <Text style={styles.label}>Pick Up Point:</Text>
+        <Text style={styles.value}>{vehicleDetails.pickupPoint}</Text>
       </View>
     </ScrollView>
   );
@@ -127,6 +96,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     backgroundColor: '#fff',
+    flex:1
   },
   section: {
     marginBottom: 10,

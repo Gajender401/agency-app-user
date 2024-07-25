@@ -18,14 +18,10 @@ import { useGlobalContext } from "@/context/GlobalProvider";
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
-
   const year = date.getUTCFullYear();
   const month = date.getUTCMonth() + 1;
   const day = date.getUTCDate();
-
-  const formattedDate = `${month}/${day}/${year}`;
-
-  return formattedDate;
+  return `${month}/${day}/${year}`;
 }
 
 const PackageVehicleListScreen = () => {
@@ -34,6 +30,8 @@ const PackageVehicleListScreen = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const { apiCaller, driverId, setPhotos } = useGlobalContext();
+  const [showFullBeforeNote, setShowFullBeforeNote] = useState(false);
+  const [showFullAfterNote, setShowFullAfterNote] = useState(false);
 
   const fetchPackages = async () => {
     try {
@@ -47,6 +45,7 @@ const PackageVehicleListScreen = () => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchPackages();
   }, []);
@@ -54,12 +53,41 @@ const PackageVehicleListScreen = () => {
   const handleShowDetails = (pkg: Package) => {
     setSelectedPackage(pkg);
     setShowDetailsModal(true);
-};
+    setShowFullBeforeNote(false);
+    setShowFullAfterNote(false);
+  };
+
+  const renderNote = (note: string, isFullNote: boolean, setFullNote: React.Dispatch<React.SetStateAction<boolean>>) => {
+    const maxLength = 100;
+    if (!note || note.length <= maxLength) {
+      return <Text style={styles.modalNoteText}>{note || 'No notes available'}</Text>;
+    }
+
+    if (isFullNote) {
+      return (
+        <View>
+          <Text style={styles.modalNoteText}>{note}</Text>
+          <TouchableOpacity onPress={() => setFullNote(false)}>
+            <Text style={styles.readMoreLess}>Show Less</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    return (
+      <View>
+        <Text style={styles.modalNoteText}>
+          {`${note.substring(0, maxLength)}...`}
+        </Text>
+        <TouchableOpacity onPress={() => setFullNote(true)}>
+          <Text style={styles.readMoreLess}>Read More</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-
-      {/* Search bar */}
       <View style={styles.searchContainer}>
         <FontAwesome5 name="search" size={18} color={Colors.secondary} />
         <TextInput
@@ -118,8 +146,10 @@ const PackageVehicleListScreen = () => {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Journey Details</Text>
-            <Text style={styles.modalText}>Before Journey Notes: {selectedPackage?.beforeJourneyNote || ''}</Text>
-            <Text style={styles.modalText}>After Journey Notes: {selectedPackage?.afterJourneyNote || ''}</Text>
+            <Text style={styles.modalText}>Before Journey Notes:</Text>
+            {renderNote(selectedPackage?.beforeJourneyNote || '', showFullBeforeNote, setShowFullBeforeNote)}
+            <Text style={styles.modalText}>After Journey Notes:</Text>
+            {renderNote(selectedPackage?.afterJourneyNote || '', showFullAfterNote, setShowFullAfterNote)}
             <View style={styles.modalButtons}>
               <TouchableOpacity
                 style={[styles.modalButton, { backgroundColor: Colors.darkBlue }]}
@@ -170,18 +200,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     color: Colors.secondary,
   },
-  addButton: {
-    backgroundColor: Colors.darkBlue,
-    paddingVertical: 10,
-    borderRadius: 5,
-    alignItems: "center",
-    marginBottom: 20,
-    width: 140,
-  },
-  addButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
   packagesList: {
     flex: 1,
   },
@@ -202,17 +220,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignItems: "center",
     gap: 5,
-  },
-  photosButton: {
-    backgroundColor: Colors.darkBlue,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    paddingVertical: 5,
-  },
-  photosButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 12,
   },
   cardText: {
     marginBottom: 8,
@@ -257,8 +264,15 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalText: {
+    marginBottom: 5,
+    textAlign: "left",
+    fontWeight: "bold",
+    alignSelf: "flex-start",
+  },
+  modalNoteText: {
     marginBottom: 15,
-    textAlign: "center",
+    textAlign: "left",
+    alignSelf: "flex-start",
   },
   modalButtons: {
     flexDirection: "row",
@@ -277,16 +291,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
   },
-  filterContainer: {
-    marginBottom: 10,
-    marginTop: -10
-  },
-  filterPicker: {
-    height: 40,
-    width: '100%',
-    borderRadius: 5,
-    marginBottom: 10
-  },
   detailsButton: {
     backgroundColor: Colors.darkBlue,
     paddingHorizontal: 10,
@@ -304,6 +308,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 15,
+  },
+  readMoreLess: {
+    color: Colors.darkBlue,
+    fontWeight: "bold",
+    marginBottom: 10,
   },
 });
 

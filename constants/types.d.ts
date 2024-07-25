@@ -57,7 +57,8 @@ interface Package {
   instructions: string;
   createdAt: string;
   updatedAt: string;
-  status: "STARTED" | "COMPLETED"
+  status: "STARTED" | "COMPLETED";
+  pickupPoint: string;
 }
 
 interface Vehicle {
