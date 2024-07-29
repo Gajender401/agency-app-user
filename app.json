@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Driver- TJ Driver",
+    "name": "TJ Driver",
     "slug": "driver",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -13,8 +13,7 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.touristjunction.driver"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
@@ -35,8 +34,11 @@
       "typedRoutes": true
     },
     "extra": {
+      "router": {
+        "origin": false
+      },
       "eas": {
-        "projectId": "da8130ba-d0cd-4cb6-8c22-9ec0b7e83b30"
+        "projectId": "57591161-1d4e-46d2-b046-cfb2bc5dbf36"
       }
     }
   }

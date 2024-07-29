@@ -38,7 +38,31 @@ interface Package {
     tax: string;
     services: any[];
   };
-  otherVehicle: string;
+  otherVehicle: {
+    _id: string;
+    number: string;
+    seatingCapacity: number;
+    model: string;
+    bodyType: string;
+    chassisBrand: string;
+    location: string;
+    contactNumber: string;
+    photos: string[];
+    isAC: boolean;
+    isForRent: boolean;
+    isForSell: boolean;
+    type: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+    PUC: string;
+    RC: string;
+    fitness: string;
+    insurance: string;
+    permit: string;
+    tax: string;
+    services: any[];
+  };
   customerName: string;
   mobileNumber: string;
   alternateNumber: string;
@@ -57,8 +81,14 @@ interface Package {
   instructions: string;
   createdAt: string;
   updatedAt: string;
-  status: "STARTED" | "COMPLETED";
-  pickupPoint: string;
+  invoiceId: string;
+  status: string;
+  departureDate: string;
+  returnDate: string;
+  createdBy: string;
+  beforeJourneyPhotos: string[];
+  afterJourneyPhotos: string[];
+  pickupPoint: string
 }
 
 interface Vehicle {
